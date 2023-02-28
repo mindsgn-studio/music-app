@@ -1,5 +1,5 @@
 before_all do
-    ensure_git_branch
+    ensure_git_branch(branch: 'android-main')
     ensure_git_status_clean
     git_pull
 end
@@ -13,8 +13,3 @@ platform :android do
         supply(track: 'beta', aab: './android/app/build/outputs/bundle/release/app-release.aab')
     end
 end
-
-
-
-
-
