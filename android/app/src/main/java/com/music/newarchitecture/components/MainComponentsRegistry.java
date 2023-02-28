@@ -1,4 +1,4 @@
-package mindsgn.studio.music.newarchitecture.components;
+package com.music.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

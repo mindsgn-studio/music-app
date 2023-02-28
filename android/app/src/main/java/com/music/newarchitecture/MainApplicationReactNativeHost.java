@@ -1,4 +1,4 @@
-package mindsgn.studio.music.newarchitecture;
+package com.music.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import mindsgn.studio.music.BuildConfig;
-import mindsgn.studio.music.newarchitecture.components.MainComponentsRegistry;
-import mindsgn.studio.music.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.music.BuildConfig;
+import com.music.newarchitecture.components.MainComponentsRegistry;
+import com.music.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
