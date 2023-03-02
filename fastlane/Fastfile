@@ -9,22 +9,10 @@ end
 platform :android do
     desc "Android build and release to beta / release"
     lane :beta do
-        json_key_file("./play-store-credentials.json")
-        package_name("mindsgn.studio.music")
-        increment_version_code(gradle_file_path: "./android/app/build.gradle")
-        increment_version_name(gradle_file_path: "./android/app/build.gradle", version_name: package['version'])
         gradle(task: 'clean', project_dir: './android/')
         gradle(task: 'bundle', build_type: 'Release', project_dir: './android')
-        supply(track: 'beta', aab: './android/app/build/outputs/bundle/release/app-release.aab')
-    end
-
-    lane :release do
-        json_key_file("./play-store-credentials.json")
-        package_name("mindsgn.studio.music")
+        supply(package_name: 'mindsgn.studio.music',json_key: "./play-store-credentials.json",  track: 'beta', aab: './android/app/build/outputs/bundle/release/app-release.aab')
         increment_version_code(gradle_file_path: "./android/app/build.gradle")
         increment_version_name(gradle_file_path: "./android/app/build.gradle", version_name: package['version'])
-        gradle(task: 'clean', project_dir: './android/')
-        gradle(task: 'bundle', build_type: 'Release', project_dir: './android')
-        supply(track: 'release', aab: './android/app/build/outputs/bundle/release/app-release.aab')
     end
 end
