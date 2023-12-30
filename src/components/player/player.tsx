@@ -20,14 +20,8 @@ const Player = ({
   title: string | null;
   state: State;
 }) => {
-  // const offset = useSharedValue(-100);
   const [slider, setSlider] = useState<number>(0);
   const {position, buffered, duration} = useProgress();
-  /*
-  const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{translateY: offset.value}],
-  }));
-  */
 
   useEffect(() => {
     setSlider((position / duration) * 100);
