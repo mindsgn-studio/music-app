@@ -33,13 +33,13 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
   const [trackPlayer, setTrackPlayer] = useState<any>(null);
   const [alltracks, setAllTracks] = useState<Song[] | string>([]);
 
-  const requestPermission = () => {};
-
   const setupTrackPlayer = async () => {
     try {
       const response = await TrackPlayer.setupPlayer();
-      console.log(response);
-    } catch (error) {}
+      setTrackPlayer(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getAllTracks = () => {
@@ -56,8 +56,6 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
         console.log('error: ', error);
       });
   };
-
-  const sortAlbums = () => {};
 
   useEffect(() => {
     if (alltracks.length > 0 && trackPlayer) {
