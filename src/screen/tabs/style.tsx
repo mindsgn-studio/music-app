@@ -7,15 +7,7 @@ const styles = StyleSheet.create({
   },
   tab: {
     backgroundColor: 'black',
-    position: 'absolute',
     height: 60,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowOffset: {
-      width: 10,
-      height: 10,
-    },
-    paddingHorizontal: 20,
   },
 });
 
