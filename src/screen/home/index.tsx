@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import styles from './style';
-import {trpc} from '../../utils/trpc';
-import {Logo, Error, SongList, Player, Header} from '../../components';
-import TrackPlayer, {
-  State,
-  AppKilledPlaybackBehavior,
-  useTrackPlayerEvents,
-  Event,
-} from 'react-native-track-player';
+import {Logo, Error, AlbumList, Player} from '../../components';
+import {State} from 'react-native-track-player';
+import {
+  getAll,
+  SortSongFields,
+  SortSongOrder,
+} from 'react-native-get-music-files';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
+const Tab = createBottomTabNavigator();
 
 interface CurrentProps {
   id: string | null;
@@ -19,11 +21,11 @@ interface CurrentProps {
   link: string | null;
 }
 
-const events = [Event.PlaybackState, Event.PlaybackError];
+// const events = [Event.PlaybackState, Event.PlaybackError];
 
 const Home = () => {
-  const [songData, setSongData] = useState<any[]>([]);
-  const [current, setCurrent] = useState<CurrentProps>({
+  const [albumData, setAlbumData] = useState<any | null>();
+  const [current] = useState<CurrentProps>({
     id: null,
     state: State.None,
     artist: null,
@@ -31,10 +33,29 @@ const Home = () => {
     image: null,
     link: null,
   });
-  const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
   const [hasError, setError] = useState<boolean>(false);
 
+  const getAllTracks = async () => {
+    const response = await getAll({
+      limit: 5,
+      offset: 1,
+      coverQuality: 50,
+      minSongDuration: 0,
+      sortBy: SortSongFields.ALBUM,
+      sortOrder: SortSongOrder.DESC,
+    });
+
+    if (typeof response === 'string') {
+      setError(true);
+      return;
+    }
+
+    setLoading(false);
+    setAlbumData(response);
+  };
+
+  /*
   const getDatabase = async () => {
     try {
       TrackPlayer.updateOptions({
@@ -112,19 +133,17 @@ const Home = () => {
       }
     }
   });
+  */
 
   useEffect(() => {
-    getDatabase();
-  }, [page]);
-
-  useEffect(() => {
-    if (current.artist && current.link && current.title) {
-      StopAndPlay();
-    }
+    //if (current.artist && current.link && current.title) {
+    //  StopAndPlay();
+    //}
   }, [current.artist, current.link, current.title]);
 
   useEffect(() => {
-    TrackPlayerSetup();
+    getAllTracks();
+    //TrackPlayerSetup();
   }, []);
 
   return (
@@ -135,13 +154,7 @@ const Home = () => {
         image={current.image}
         state={current.state}
       />
-      <SongList
-        data={songData}
-        onEndReach={() => {
-          setPage(page + 1);
-        }}
-        setCurrent={setCurrent}
-      />
+      <AlbumList data={albumData} />
       <Logo loading={loading} />
       <Error error={hasError} />
     </View>

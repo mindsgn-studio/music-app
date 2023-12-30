@@ -67,3 +67,6 @@ src/components/@declare/
 # Ruby / CocoaPods
 /ios/Pods/
 /vendor/bundle/
+
+# Ignore Gradle build output directory
+build
