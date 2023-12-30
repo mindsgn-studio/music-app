@@ -1,18 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import styles from './style';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
-  withTiming,
 } from 'react-native-reanimated';
 import TrackPlayer, {State} from 'react-native-track-player';
 import {useProgress} from 'react-native-track-player';
@@ -28,13 +20,14 @@ const Player = ({
   title: string | null;
   state: State;
 }) => {
-  const offset = useSharedValue(-100);
+  // const offset = useSharedValue(-100);
   const [slider, setSlider] = useState<number>(0);
   const {position, buffered, duration} = useProgress();
-
+  /*
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{translateY: offset.value}],
   }));
+  */
 
   useEffect(() => {
     setSlider((position / duration) * 100);

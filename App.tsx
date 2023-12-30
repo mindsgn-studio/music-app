@@ -1,5 +1,5 @@
 import React from 'react';
-import {Home} from './src/screen';
+import {Tabs} from './src/screen';
 import {SafeAreaView, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -20,7 +20,7 @@ const App = () => {
             screenOptions={{
               headerShown: false,
             }}>
-            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Tabs" component={Tabs} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaView>
