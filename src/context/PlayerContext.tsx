@@ -12,6 +12,7 @@ import {
   SortSongOrder,
 } from 'react-native-get-music-files';
 import {PlayerInterface, Song} from '../@types';
+import TrackPlayer from 'react-native-track-player';
 
 const PlayerContext = createContext<PlayerInterface>({
   isReady: false,
@@ -29,9 +30,17 @@ function usePlayer(): any {
 
 const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
   const [isReady, setIsReady] = useState(false);
+  const [trackPlayer, setTrackPlayer] = useState<any>(null);
   const [alltracks, setAllTracks] = useState<Song[] | string>([]);
 
   const requestPermission = () => {};
+
+  const setupTrackPlayer = async () => {
+    try {
+      const response = await TrackPlayer.setupPlayer();
+      console.log(response);
+    } catch (error) {}
+  };
 
   const getAllTracks = () => {
     getAll({
@@ -51,12 +60,13 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
   const sortAlbums = () => {};
 
   useEffect(() => {
-    if (alltracks.length > 0) {
+    if (alltracks.length > 0 && trackPlayer) {
       setIsReady(true);
     }
-  }, [alltracks]);
+  }, [alltracks, trackPlayer]);
 
   useEffect(() => {
+    setupTrackPlayer();
     getAllTracks();
   }, []);
 

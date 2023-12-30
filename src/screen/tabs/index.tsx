@@ -55,6 +55,25 @@ function Tabs() {
           ),
         }}
       />
+      <Tab.Screen
+        name="My Playlist"
+        component={Search}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <View
+              style={{
+                padding: 10,
+                borderRadius: 50,
+              }}>
+              <Icon
+                name="bookmark"
+                size={focused ? 25 : 20}
+                color={focused ? 'white' : 'gray'}
+              />
+            </View>
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
