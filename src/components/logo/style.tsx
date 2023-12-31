@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     color: 'white',
     fontSize: 70,
-    fontWeight: 'bold',
   },
 });
 
