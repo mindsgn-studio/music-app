@@ -13,6 +13,7 @@ import {
 } from 'react-native-get-music-files';
 import {PlayerInterface, Song} from '../@types';
 import TrackPlayer from 'react-native-track-player';
+// import Vasern from 'vasern';
 
 const PlayerContext = createContext<PlayerInterface>({
   isReady: false,
@@ -29,7 +30,9 @@ function usePlayer(): any {
 }
 
 const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
-  const [isReady, setIsReady] = useState(false);
+  const [isReady, setIsReady] = useState<boolean>(false);
+  // const [hasPermission, setHasPermission] = useState<boolean>(false);
+  // const [vasernDB, setVasern] = useState<any | null>();
   const [trackPlayer, setTrackPlayer] = useState<any>(null);
   const [alltracks, setAllTracks] = useState<Song[] | string>([]);
 
@@ -37,9 +40,9 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     try {
       const response = await TrackPlayer.setupPlayer();
       setTrackPlayer(response);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
+
+    setTrackPlayer(true);
   };
 
   const getAllTracks = () => {
@@ -66,6 +69,53 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
   useEffect(() => {
     setupTrackPlayer();
     getAllTracks();
+  }, []);
+
+  useEffect(() => {
+    /*
+      const VasernDB = new Vasern({
+        schemas: [
+          {
+            name: 'tracks',
+            props: {
+              url: 'string',
+              title: 'string',
+              genre: 'string',
+              duration: 'int',
+              album: 'string',
+              artist: 'string',
+              cover: 'string',
+            },
+          },
+          {
+            name: 'recent',
+            props: {
+              url: 'string',
+              title: 'string',
+              genre: 'string',
+              duration: 'int',
+              album: 'string',
+              artist: 'string',
+              cover: 'string',
+            },
+          },
+          {
+            name: 'myplaylist',
+            props: {
+              url: 'string',
+              title: 'string',
+              genre: 'string',
+              duration: 'int',
+              album: 'string',
+              artist: 'string',
+              cover: 'string',
+            },
+          },
+        ],
+      });
+
+    setVasern(VasernDB);
+    */
   }, []);
 
   return (
