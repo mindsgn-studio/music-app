@@ -1,26 +1,20 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import styles from './style';
+import {usePlayer} from '../../context';
+import {HomeCard, RecentCard} from '../../components';
 
 const Home = () => {
+  const {alltracks} = usePlayer();
+
   return (
     <View style={styles.container}>
-      <View>
-        <Text />
-      </View>
-      <View>
-        <View>
-          <Text style={styles.text}>Albums</Text>
-        </View>
-        <View>
-          <View />
-        </View>
-      </View>
-      <View>
-        <View>
-          <Text style={styles.text}>Albums</Text>
-        </View>
-      </View>
+      <HomeCard
+        title={alltracks[0].title}
+        artist={alltracks[0].artist}
+        art={alltracks[0].cover}
+      />
+      <RecentCard />
     </View>
   );
 };

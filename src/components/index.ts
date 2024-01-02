@@ -1,8 +1,10 @@
-import Logo from './logo/logo';
-import SongList from './songList/songList';
+import Logo from './logo';
+import SongList from './songList';
 import Error from './error/logo';
-import Player from './player/player';
+import Player from './player';
 import Header from './header/header';
-import AlbumList from './albumList/albumList';
+import AlbumList from './albumList';
+import HomeCard from './homeCard';
+import RecentCard from './recentCard/recentCard';
 
-export {Logo, SongList, AlbumList, Error, Player, Header};
+export {Logo, SongList, AlbumList, Error, Player, Header, HomeCard, RecentCard};
