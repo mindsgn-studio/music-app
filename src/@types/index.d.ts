@@ -12,8 +12,12 @@ export interface Song {
 
 export interface PlayerInterface {
   isReady: boolean;
-  alltracks: Song[] | string;
-  getAllTracks: () => void;
+  error: any;
+}
+
+export interface Error {
+  error: boolean;
+  message: string;
 }
 
 export {Song, PlayerInterface};

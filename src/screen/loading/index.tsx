@@ -7,13 +7,19 @@ import {usePlayer} from '../../context';
 
 const Loading: React.FC<any> = (props: any) => {
   const {navigation} = props;
-  const {isReady} = usePlayer();
+  const {isReady, error} = usePlayer();
 
   useEffect(() => {
     if (isReady) {
       navigation.replace('Tabs');
     }
   }, [isReady, navigation]);
+
+  useEffect(() => {
+    if (error.error) {
+      navigation.replace('Error');
+    }
+  }, [error, navigation]);
 
   return (
     <View style={styles.container}>
