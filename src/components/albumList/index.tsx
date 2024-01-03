@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, FlatList} from 'react-native';
-import AlbumCard from '../albumCard/albumCard';
+import AlbumCard from '../albumCard';
 import styles from './style';
 
 const AlbumList = ({data}: {data: any}) => {

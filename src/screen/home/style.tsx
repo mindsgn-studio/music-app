@@ -2,8 +2,10 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
-    marginHorizontal: 10,
+    flex: 1,
+    backgroundColor: '#000',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   card: {
     height: 200,

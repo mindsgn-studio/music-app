@@ -19,6 +19,7 @@ import {
   checkMultiple,
   PERMISSIONS,
 } from 'react-native-permissions';
+import RNFS from 'react-native-fs';
 
 const PlayerContext = createContext<PlayerInterface>({
   isReady: false,
@@ -57,28 +58,68 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       sortOrder: SortSongOrder.DESC,
     })
       .then((success: any) => {
-        success.map((track: any) => {
+        success.map(async (track: any) => {
           try {
             realm.write(() => {
               const existingTrack: any = realm
-                .objects('tracks')
+                .objects('Tracks')
                 .filtered(
                   'artist = $0 AND title = $1',
                   track.artist,
                   track.title,
-                )[0];
+                );
 
-              if (existingTrack) {
-                Object.keys(track).forEach((key: any) => {
-                  existingTrack[key] = track[key];
-                });
-              } else {
-                realm.create('tracks', {
+              if (existingTrack.length === 0) {
+                let song = {
                   _id: new Realm.BSON.ObjectId(),
-                  ...track,
-                });
+                  createdAt: new Date(),
+                  url: track.url,
+                  title: track.title,
+                  duration: track.duration,
+                  album: track.album,
+                  artist: track.artist,
+                  cover: track.cover,
+                };
+
+                const newTrack = realm.create('Tracks', {...song});
+                console.log('Track: ', newTrack);
+              }
+
+              const existingArtist: any = realm
+                .objects('Artists')
+                .filtered('artist = $0', track.artist);
+
+              if (existingArtist.length === 0) {
+                let artist: any = {
+                  _id: new Realm.BSON.ObjectId(),
+                  artist: track.artist,
+                  createdAt: new Date(),
+                };
+
+                const newArtist = realm.create('Artists', {...artist});
+                console.log('Artist: ', newArtist);
+              }
+
+              const existingAlbum: any = realm
+                .objects('Albums')
+                .filtered('album = $0', track.album);
+
+              if (existingAlbum.length === 0) {
+                let album: any = {
+                  _id: new Realm.BSON.ObjectId(),
+                  album: track.album,
+                  artist: track.artist,
+                  createdAt: new Date(),
+                  cover: track.cover,
+                };
+
+                const newAlbum = realm.create('Albums', {...album});
+                console.log('Artist: ', newAlbum);
               }
             });
+
+            setIsReady(true);
+            //realm.close();
           } catch (error) {
             console.error('Error inserting track:', error);
           }
@@ -124,18 +165,7 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       PERMISSIONS.ANDROID.READ_MEDIA_AUDIO,
     ])
       .then(statuses => {
-        console.log(
-          'Media Location',
-          statuses[PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION],
-        );
-        console.log(
-          'External Storage',
-          statuses[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE],
-        );
-        console.log(
-          'Read Media',
-          statuses[PERMISSIONS.ANDROID.READ_MEDIA_AUDIO],
-        );
+        getAllTracks();
       })
       .catch((error: any) => {
         setError({
@@ -146,8 +176,36 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       });
   };
 
+  const crawlDirectories = async (directory: any) => {
+    try {
+      const files = await RNFS.readDir(directory);
+      const mp3Files = files
+        .filter(file => file.isFile() && file.name.endsWith('.mp3'))
+        .map(mp3File => mp3File.path);
+
+      const subdirectories = files.filter(file => file.isDirectory());
+      console.log(subdirectories);
+      for (const subdirectory of subdirectories) {
+        const subdirectoryMp3Files = await crawlDirectories(subdirectory.path);
+        mp3Files.push(...subdirectoryMp3Files);
+      }
+
+      return mp3Files;
+    } catch (error) {
+      console.error('Error crawling directories:', error);
+      return [];
+    }
+  };
+
   useEffect(() => {
-    checkMediaAudioPermission();
+    let startDirectory = RNFS.ExternalStorageDirectoryPath;
+    crawlDirectories(startDirectory)
+      .then(mp3Files => {
+        console.log('local storage MP3 files:', mp3Files);
+      })
+      .catch((error: any) => {
+        console.error('Error:', error);
+      });
   }, []);
 
   return <PlayerContext.Provider {...props} value={{isReady, error}} />;

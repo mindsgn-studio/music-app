@@ -17,7 +17,6 @@ const Loading: React.FC<any> = (props: any) => {
 
   useEffect(() => {
     if (error.error) {
-      navigation.replace('Error');
     }
   }, [error, navigation]);
 

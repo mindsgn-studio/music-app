@@ -1,11 +1,15 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 import styles from './style';
+import {HomeCard, AlbumCard} from '../../components';
 
 const Home = () => {
-  useEffect(() => {}, []);
-
-  return <View style={styles.container} />;
+  return (
+    <View style={styles.container}>
+      <HomeCard />
+      <AlbumCard />
+    </View>
+  );
 };
 
 export default Home;

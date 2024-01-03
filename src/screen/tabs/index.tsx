@@ -14,6 +14,7 @@ function Tabs() {
     <>
       <Tab.Navigator
         screenOptions={{
+          tabBarShowLabel: false,
           headerShown: false,
           tabBarStyle: {
             ...styles.tab,
@@ -77,7 +78,6 @@ function Tabs() {
           }}
         />
       </Tab.Navigator>
-      <Player />
     </>
   );
 }

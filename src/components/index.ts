@@ -5,6 +5,6 @@ import Player from './player';
 import Header from './header/header';
 import AlbumList from './albumList';
 import HomeCard from './homeCard';
-import RecentCard from './recentCard/recentCard';
+import AlbumCard from './albumCard';
 
-export {Logo, SongList, AlbumList, Error, Player, Header, HomeCard, RecentCard};
+export {Logo, SongList, AlbumList, Error, Player, Header, HomeCard, AlbumCard};

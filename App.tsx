@@ -26,6 +26,8 @@ const App = () => {
                 <Stack.Screen name="Loading" component={Loading} />
                 <Stack.Screen name="Tabs" component={Tabs} />
                 <Stack.Screen name="Error" component={Error} />
+                <Stack.Screen name="Album" component={Error} />
+                <Stack.Screen name="Artist" component={Error} />
               </Stack.Navigator>
             </NavigationContainer>
           </SafeAreaView>
