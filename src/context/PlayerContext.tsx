@@ -11,14 +11,18 @@ import {
   SortSongFields,
   SortSongOrder,
 } from 'react-native-get-music-files';
-import {PlayerInterface, Song} from '../@types';
+import {PlayerInterface} from '../@types';
 import TrackPlayer from 'react-native-track-player';
-// import Vasern from 'vasern';
+import {useRealm} from './trackContext';
+import {
+  requestMultiple,
+  checkMultiple,
+  PERMISSIONS,
+} from 'react-native-permissions';
 
 const PlayerContext = createContext<PlayerInterface>({
   isReady: false,
-  alltracks: [],
-  getAllTracks: () => {},
+  error: false,
 });
 
 function usePlayer(): any {
@@ -30,19 +34,19 @@ function usePlayer(): any {
 }
 
 const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
+  const realm = useRealm();
+  const [error, setError] = useState<any>({
+    error: false,
+    message: '',
+  });
   const [isReady, setIsReady] = useState<boolean>(false);
-  // const [hasPermission, setHasPermission] = useState<boolean>(false);
-  // const [vasernDB, setVasern] = useState<any | null>();
   const [trackPlayer, setTrackPlayer] = useState<any>(null);
-  const [alltracks, setAllTracks] = useState<Song[] | string>([]);
 
   const setupTrackPlayer = async () => {
     try {
       const response = await TrackPlayer.setupPlayer();
       setTrackPlayer(response);
     } catch (error) {}
-
-    setTrackPlayer(true);
   };
 
   const getAllTracks = () => {
@@ -52,78 +56,101 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       sortBy: SortSongFields.ALBUM,
       sortOrder: SortSongOrder.DESC,
     })
-      .then(success => {
-        setAllTracks(success);
+      .then((success: any) => {
+        success.map((track: any) => {
+          try {
+            realm.write(() => {
+              const existingTrack: any = realm
+                .objects('tracks')
+                .filtered(
+                  'artist = $0 AND title = $1',
+                  track.artist,
+                  track.title,
+                )[0];
+
+              if (existingTrack) {
+                Object.keys(track).forEach((key: any) => {
+                  existingTrack[key] = track[key];
+                });
+              } else {
+                realm.create('tracks', {
+                  _id: new Realm.BSON.ObjectId(),
+                  ...track,
+                });
+              }
+            });
+          } catch (error) {
+            console.error('Error inserting track:', error);
+          }
+        });
       })
       .catch((error: any) => {
-        console.log('error: ', error);
+        setError({
+          error: true,
+          title: 'Reading Error',
+          message: '',
+        });
+      });
+  };
+
+  const checkMediaAudioPermission = () => {
+    checkMultiple([
+      PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION,
+      PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+      PERMISSIONS.ANDROID.READ_MEDIA_AUDIO,
+    ]).then(statuses => {
+      console.log(statuses[PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION]);
+
+      if (statuses[PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION] === 'denied') {
+        requestMediaAudioPermission();
+      }
+
+      if (statuses[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] === 'denied') {
+        requestMediaAudioPermission();
+      }
+
+      if (statuses[PERMISSIONS.ANDROID.READ_MEDIA_AUDIO] === 'denied') {
+        requestMediaAudioPermission();
+      }
+
+      getAllTracks();
+    });
+  };
+
+  const requestMediaAudioPermission = () => {
+    requestMultiple([
+      PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION,
+      PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+      PERMISSIONS.ANDROID.READ_MEDIA_AUDIO,
+    ])
+      .then(statuses => {
+        console.log(
+          'Media Location',
+          statuses[PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION],
+        );
+        console.log(
+          'External Storage',
+          statuses[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE],
+        );
+        console.log(
+          'Read Media',
+          statuses[PERMISSIONS.ANDROID.READ_MEDIA_AUDIO],
+        );
+      })
+      .catch((error: any) => {
+        setError({
+          error: true,
+          title: 'Permission Error',
+          message: 'Please allow storage & media permission',
+        });
       });
   };
 
   useEffect(() => {
-    if (alltracks.length > 0 && trackPlayer) {
-      setIsReady(true);
-    }
-  }, [alltracks, trackPlayer]);
-
-  useEffect(() => {
-    setupTrackPlayer();
-    getAllTracks();
+    checkMediaAudioPermission();
   }, []);
 
-  useEffect(() => {
-    /*
-      const VasernDB = new Vasern({
-        schemas: [
-          {
-            name: 'tracks',
-            props: {
-              url: 'string',
-              title: 'string',
-              genre: 'string',
-              duration: 'int',
-              album: 'string',
-              artist: 'string',
-              cover: 'string',
-            },
-          },
-          {
-            name: 'recent',
-            props: {
-              url: 'string',
-              title: 'string',
-              genre: 'string',
-              duration: 'int',
-              album: 'string',
-              artist: 'string',
-              cover: 'string',
-            },
-          },
-          {
-            name: 'myplaylist',
-            props: {
-              url: 'string',
-              title: 'string',
-              genre: 'string',
-              duration: 'int',
-              album: 'string',
-              artist: 'string',
-              cover: 'string',
-            },
-          },
-        ],
-      });
-
-    setVasern(VasernDB);
-    */
-  }, []);
-
-  return (
-    <PlayerContext.Provider
-      {...props}
-      value={{isReady, alltracks, getAllTracks}}
-    />
-  );
+  return <PlayerContext.Provider {...props} value={{isReady, error}} />;
 };
 
 export {PlayerProvider, usePlayer};
