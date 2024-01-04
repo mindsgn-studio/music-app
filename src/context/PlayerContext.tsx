@@ -14,7 +14,8 @@ import {
   PERMISSIONS,
 } from 'react-native-permissions';
 import RNFS from 'react-native-fs';
-import * as jsmediatags from 'jsmediatags';
+import {NativeModules} from 'react-native';
+const {Player} = NativeModules;
 
 const PlayerContext = createContext<PlayerInterface>({
   isReady: false,
@@ -24,7 +25,7 @@ const PlayerContext = createContext<PlayerInterface>({
 function usePlayer(): any {
   const context = useContext(PlayerContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('usePlayer must be used within an PlayerProvider');
   }
   return context;
 }
@@ -38,6 +39,17 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
   const [isReady, setIsReady] = useState<boolean>(false);
   const [files, setFiles] = useState<string[]>([]);
 
+  useEffect(() => {
+    Player.play('Aman', (err, msg) => {
+      if (err) {
+        console.log('player: ', err);
+        return;
+      }
+      console.log(msg);
+    });
+  }, []);
+
+  /*
   const checkMediaAudioPermission = () => {
     checkMultiple([
       PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION,
@@ -97,9 +109,17 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     }
   };
 
-  useEffect(() => {
-    checkMediaAudioPermission();
-  }, []);
+  const mp3ToBlob = async filePath => {};
+
+  const getFileMetaData = async file => {
+    try {
+      console.log(file);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
 
   useEffect(() => {
     let startDirectory = RNFS.ExternalStorageDirectoryPath;
@@ -117,19 +137,11 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
   useEffect(() => {
     if (files.length !== 0) {
       files.map(file => {
-        new jsmediatags.Reader(file).read({
-          onSuccess: tag => {
-            // console.log('Success!');
-            // console.log(tag);
-          },
-          onError: error => {
-            console.log('Error: ', file);
-          },
-        });
+        getFileMetaData(file);
       });
     }
   }, [files]);
-
+  */
   return <PlayerContext.Provider {...props} value={{isReady, error}} />;
 };
 

@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "android:beta": "yarn version --minor && fastlane android beta",
     "android:release": "yarn version --major && fastlane android release",
-    "postinstall": "rn-nodeify --install buffer,stream,assert,events,crypto,vm,process --hack"
+    "postinstall": "rn-nodeify --install buffer,stream,assert,events,crypto,vm,process,fs,asyncstorage-down --hack"
   },
   "husky": {
     "hooks": {
@@ -29,15 +29,20 @@
     "@realm/react": "0.4.0",
     "@walletconnect/react-native-dapp": "^1.8.0",
     "assert": "^1.1.1",
+    "asyncstorage-down": "^4.2.0",
     "big-integer": "^1.6.51",
     "buffer": "^6.0.3",
     "console-browserify": "^1.2.0",
     "ethers": "^6.7.0",
+    "fs": "^0.0.1-security",
     "jetifier": "^2.0.0",
     "jsmediatags": "^3.9.7",
+    "meta-music": "^0.1.0",
     "mp3tag.js": "^3.7.1",
     "music-metadata": "^7.14.0",
+    "music-metadata-browser": "^2.5.10",
     "node-libs-browser": "^2.2.1",
+    "node-taglib-sharp-extend": "^0.2.3",
     "path-browserify": "^0.0.0",
     "process": "^0.11.10",
     "react": "18.1.0",
@@ -69,7 +74,7 @@
     "redux-persist": "^6.0.0",
     "rn-nodeify": "^10.3.0",
     "stream-browserify": "^1.0.0",
-    "vasern": "^0.3.68",
+    "util": "^0.12.5",
     "vm-browserify": "0.0.4",
     "web3": "^4.0.3",
     "zod": "^3.21.4"
