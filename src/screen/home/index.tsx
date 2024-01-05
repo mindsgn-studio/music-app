@@ -9,11 +9,13 @@ const Home = (props: any) => {
   const {navigation} = props;
 
   const goToAlbum = (album: string) => {
-    navigation.navigate('Album', {});
+    const data = {album};
+    navigation.navigate('Album', data);
   };
 
   const goToArtist = (artist: string) => {
-    navigation.navigate('Artist', {});
+    const data = {artist};
+    navigation.navigate('Artist', data);
   };
 
   return (

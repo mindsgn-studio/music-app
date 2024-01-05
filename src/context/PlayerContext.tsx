@@ -158,6 +158,7 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       });
   };
 
+  /*
   const checkMediaAudioPermission = () => {
     checkMultiple([
       PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION,
@@ -230,6 +231,18 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     }, 10000);
   };
 
+  const mp3ToBlob = async filePath => {};
+
+  const getFileMetaData = async file => {
+    try {
+      console.log(file);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+
   useEffect(() => {
     if (filesList.length !== 0) {
       getMetadata();
@@ -240,6 +253,14 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     checkMediaAudioPermission();
   }, []);
 
+  useEffect(() => {
+    if (files.length !== 0) {
+      files.map(file => {
+        getFileMetaData(file);
+      });
+    }
+  }, [files]);
+  */
   return <PlayerContext.Provider {...props} value={{isReady, error}} />;
 };
 
