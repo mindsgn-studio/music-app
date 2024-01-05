@@ -19,8 +19,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'black',
     justifyContent: 'space-between',
-    borderBottomStartRadius: 15,
-    borderBottomEndRadius: 15,
     padding: 10,
   },
   text: {
@@ -48,7 +46,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     backgroundColor: 'white',
-    borderRadius: 10,
   },
 });
 

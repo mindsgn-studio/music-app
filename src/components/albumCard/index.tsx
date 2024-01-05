@@ -33,8 +33,11 @@ const AlbumCard = ({
       <View>
         {data.map((track: any) => {
           return (
-            <View style={styles.card}>
-              <TouchableOpacity onPress={goToAlbum}>
+            <View style={styles.card} key={track._id}>
+              <TouchableOpacity
+                onPress={() => {
+                  goToAlbum(track.album);
+                }}>
                 <ImageBackground
                   style={styles.image}
                   source={{uri: `file://${track.cover}`}}
@@ -43,7 +46,10 @@ const AlbumCard = ({
               </TouchableOpacity>
 
               <View style={styles.detailsContainer}>
-                <TouchableOpacity onPress={goToAlbum}>
+                <TouchableOpacity
+                  onPress={() => {
+                    goToAlbum(track.album);
+                  }}>
                   <Text style={styles.albumText}>{track.album}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={goToArtist}>

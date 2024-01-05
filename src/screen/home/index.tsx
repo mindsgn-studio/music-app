@@ -8,35 +8,31 @@ const Home = (props: any) => {
   const realm = useRealm();
   const {navigation} = props;
 
-  const goToAlbum = (album: any) => {
-    const trackData = realm.objects('Tracks').filtered('album = $0', album);
-    const albumData = realm.objects('Albums').filtered('album = $0', album);
+  const goToAlbum = (album: string) => {
+    try {
+      const queryResponse = realm
+        .objects('Tracks')
+        .filtered('album == $0', `${album}`);
 
-    if (albumData.length >= 1) {
+      const queryAlbum = realm
+        .objects('Albums')
+        .filtered('album == $0', `${album}`);
+
       const data = {
-        ...trackData,
-        ...albumData,
+        tracks: queryResponse,
+        album: queryAlbum,
       };
 
-      navigation.navigate('Album', data);
-    } else {
-      console.warn(`Album not found: ${album}`);
+      navigation.navigate({
+        name: 'Album',
+        params: data,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const goToArtist = (artist: any) => {
-    const artistData = realm.objects('Artists').filtered('artist = $0', artist);
-
-    if (artistData.length >= 1) {
-      const data = {
-        ...artistData,
-      };
-
-      navigation.navigate('Artist', data);
-    } else {
-      console.warn(`Artist not found: ${artist}`);
-    }
-  };
+  const goToArtist = (artist: any) => {};
 
   return (
     <ScrollView style={styles.container}>
