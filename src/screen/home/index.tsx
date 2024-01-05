@@ -2,20 +2,40 @@ import React from 'react';
 import {ScrollView} from 'react-native';
 import styles from './style';
 import {AlbumCard} from '../../components';
-import Realm from 'realm';
+import {useRealm} from '../../context';
 
 const Home = (props: any) => {
-  const realm = Realm();
+  const realm = useRealm();
   const {navigation} = props;
 
-  const goToAlbum = (album: string) => {
-    const data = {album};
-    navigation.navigate('Album', data);
+  const goToAlbum = (album: any) => {
+    const trackData = realm.objects('Tracks').filtered('album = $0', album);
+    const albumData = realm.objects('Albums').filtered('album = $0', album);
+
+    if (albumData.length >= 1) {
+      const data = {
+        ...trackData,
+        ...albumData,
+      };
+
+      navigation.navigate('Album', data);
+    } else {
+      console.warn(`Album not found: ${album}`);
+    }
   };
 
-  const goToArtist = (artist: string) => {
-    const data = {artist};
-    navigation.navigate('Artist', data);
+  const goToArtist = (artist: any) => {
+    const artistData = realm.objects('Artists').filtered('artist = $0', artist);
+
+    if (artistData.length >= 1) {
+      const data = {
+        ...artistData,
+      };
+
+      navigation.navigate('Artist', data);
+    } else {
+      console.warn(`Artist not found: ${artist}`);
+    }
   };
 
   return (
