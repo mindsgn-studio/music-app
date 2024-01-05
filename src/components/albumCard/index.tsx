@@ -1,9 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, ImageBackground} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 import styles from './style';
 import {useRealm} from '../../context';
 
-const AlbumCard = () => {
+const AlbumCard = ({
+  goToAlbum,
+  goToArtist,
+}: {
+  goToAlbum: any;
+  goToArtist: any;
+}) => {
   const realm = useRealm();
   const [data, setData] = useState([]);
 
@@ -11,7 +23,6 @@ const AlbumCard = () => {
     const albumResponse: any = realm.objects('Albums');
     if (albumResponse.length === 0) {
     } else {
-      console.log(albumResponse);
       setData(albumResponse);
     }
   }, []);
@@ -19,16 +30,27 @@ const AlbumCard = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{'Albums'}</Text>
-      <View style={styles.cardRow}>
+      <View>
         {data.map((track: any) => {
           return (
-            <TouchableOpacity style={styles.card}>
-              <ImageBackground
-                style={styles.image}
-                source={{uri: track.cover}}
-                resizeMode="cover"
-              />
-            </TouchableOpacity>
+            <View style={styles.card}>
+              <TouchableOpacity onPress={goToAlbum}>
+                <ImageBackground
+                  style={styles.image}
+                  source={{uri: `file://${track.cover}`}}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+
+              <View style={styles.detailsContainer}>
+                <TouchableOpacity onPress={goToAlbum}>
+                  <Text style={styles.albumText}>{track.album}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={goToArtist}>
+                  <Text style={styles.artistText}>{track.artist}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           );
         })}
       </View>
