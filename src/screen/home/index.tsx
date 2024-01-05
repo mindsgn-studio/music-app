@@ -1,14 +1,24 @@
 import React from 'react';
-import {View} from 'react-native';
+import {ScrollView} from 'react-native';
 import styles from './style';
-import {HomeCard, AlbumCard} from '../../components';
+import {AlbumCard} from '../../components';
 
-const Home = () => {
+const Home = (props: any) => {
+  const {navigation} = props;
+
+  console.log(props.navigation.navigation);
+  const goToAlbum = () => {
+    navigation.navigate('Album');
+  };
+
+  const goToArtist = () => {
+    navigation.navigate('Artist');
+  };
+
   return (
-    <View style={styles.container}>
-      <HomeCard />
-      <AlbumCard />
-    </View>
+    <ScrollView style={styles.container}>
+      <AlbumCard goToAlbum={goToAlbum} goToArtist={goToArtist} />
+    </ScrollView>
   );
 };
 
