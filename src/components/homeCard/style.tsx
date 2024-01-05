@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
-    height: 200,
+    height: 250,
     justifyContent: 'flex-end',
   },
   buttons: {

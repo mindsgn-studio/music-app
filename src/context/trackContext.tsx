@@ -20,12 +20,11 @@ class Artists extends Realm.Object<Artists> {
     name: 'Artists',
     properties: {
       _id: 'objectId',
-      artist: {type: 'string', indexed: true},
+      artist: {type: 'string?', indexed: true},
       profile: 'string?',
-      about: 'string?',
-      createdAt: 'date',
+      createdAt: 'date?',
     },
-    primaryKey: 'artist',
+    primaryKey: '_id',
   };
 }
 
@@ -36,13 +35,13 @@ class Albums extends Realm.Object<Albums> {
     name: 'Albums',
     properties: {
       _id: 'objectId',
-      album: {type: 'string', indexed: true},
-      artist: 'string',
-      released: 'int?',
-      createdAt: 'date',
+      album: {type: 'string?', indexed: true},
+      artist: 'string?',
+      year: 'int?',
+      createdAt: 'date?',
       cover: 'string?',
     },
-    primaryKey: 'album',
+    primaryKey: '_id',
   };
 }
 
@@ -53,11 +52,11 @@ class Tracks extends Realm.Object<Tracks> {
     name: 'Tracks',
     properties: {
       _id: 'objectId',
-      url: 'string',
-      title: 'string',
-      duration: 'int',
-      album: 'string',
-      artist: 'string',
+      url: 'string?',
+      title: 'string?',
+      duration: 'int?',
+      album: 'string?',
+      artist: 'string?',
       cover: 'string?',
       createdAt: 'date',
     },
@@ -67,7 +66,7 @@ class Tracks extends Realm.Object<Tracks> {
 
 const realmConfig: Realm.Configuration = {
   schema: [Tracks, Artists, Albums, History],
-  schemaVersion: 16,
+  schemaVersion: 20,
 };
 
 const {RealmProvider, useRealm, useObject, useQuery} =

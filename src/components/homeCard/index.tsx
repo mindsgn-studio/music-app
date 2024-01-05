@@ -23,6 +23,8 @@ const HomeCard = () => {
       const randomNumber: number = Math.floor(
         Math.random() * (response.length - 1),
       );
+
+      console.log(response[randomNumber].cover);
       setData(response[randomNumber]);
     }
   }, []);
@@ -31,7 +33,7 @@ const HomeCard = () => {
     <ImageBackground
       style={styles.imageContainer}
       imageStyle={{borderRadius: 15}}
-      source={{uri: data.cover}}
+      source={{uri: `file://${data.cover}`}}
       resizeMode="cover">
       <LinearGradient
         colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)']}

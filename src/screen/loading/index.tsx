@@ -11,7 +11,7 @@ const Loading: React.FC<any> = (props: any) => {
 
   useEffect(() => {
     if (isReady) {
-      navigation.replace('Tabs');
+      navigation.replace('Home');
     }
   }, [isReady, navigation]);
 
