@@ -3,20 +3,19 @@ import {View, Text, ImageBackground} from 'react-native';
 import styles from './style';
 import LinearGradient from 'react-native-linear-gradient';
 
-const AlbumCard = ({
-  artist,
+const HomeCard = ({
+  cover,
   title,
-  art = '',
+  artist,
 }: {
-  artist?: string;
-  title?: string;
-  art?: string;
+  cover: string;
+  title: string;
+  artist: string;
 }) => {
   return (
     <ImageBackground
       style={styles.imageContainer}
-      imageStyle={{borderRadius: 15}}
-      source={{uri: art}}
+      source={{uri: `file://${cover}`}}
       resizeMode="cover">
       <LinearGradient
         colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)']}
@@ -46,4 +45,4 @@ const AlbumCard = ({
   );
 };
 
-export default AlbumCard;
+export default HomeCard;

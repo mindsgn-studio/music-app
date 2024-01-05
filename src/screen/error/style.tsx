@@ -5,9 +5,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
-  tab: {
-    backgroundColor: 'black',
-    height: 60,
+  text: {
+    color: 'white',
   },
 });
 

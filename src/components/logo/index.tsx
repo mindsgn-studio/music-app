@@ -31,9 +31,7 @@ const Logo = ({loading}: {loading: boolean}) => {
           display: loading ? 'flex' : 'none',
         },
       ]}>
-      <Animated.Text style={[styles.text, animatedStyles]}>
-        MIXØ.XYZ
-      </Animated.Text>
+      <Animated.Text style={[styles.text, animatedStyles]}>MIXØ</Animated.Text>
     </View>
   );
 };

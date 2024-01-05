@@ -13,10 +13,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   text: {
+    fontFamily: 'SF-Pro-Rounded-Heavy',
     position: 'absolute',
     color: 'white',
     fontSize: 70,
-    fontWeight: 'bold',
   },
 });
 

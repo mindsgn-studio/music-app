@@ -2,12 +2,12 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#000',
+    width: '100%',
+    height: 200,
   },
-  tab: {
-    backgroundColor: 'black',
-    height: 60,
+  text: {
+    fontFamily: 'SF-Pro-Rounded-Heavy',
+    fontSize: 32,
   },
 });
 
