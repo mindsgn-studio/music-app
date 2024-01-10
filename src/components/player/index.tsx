@@ -3,32 +3,54 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import styles from './style';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
-import TrackPlayer, {State} from 'react-native-track-player';
-import {useProgress} from 'react-native-track-player';
+import TrackPlayer, {
+  State,
+  useProgress,
+  Event,
+  useTrackPlayerEvents,
+} from 'react-native-track-player';
+import {usePlayer} from '../../context';
 
-const Player = ({
-  image = null,
-  artist = null,
-  title = null,
-  state,
-}: {
-  image: string | null;
-  artist: string | null;
-  title: string | null;
-  state: State;
-}) => {
+const events = [Event.PlaybackState, Event.PlaybackError];
+
+const Player = () => {
+  const [state, setState] = useState<string>('idle');
+  const progress = useSharedValue(0);
+  const {playerState} = usePlayer();
+  const {cover, artist, title} = playerState;
   const [slider, setSlider] = useState<number>(0);
   const {position, buffered, duration} = useProgress();
+
+  useTrackPlayerEvents(events, event => {
+    if (event.type === Event.PlaybackError) {
+    }
+    if (event.type === Event.PlaybackState) {
+      setState(event.state);
+    }
+  });
 
   useEffect(() => {
     setSlider((position / duration) * 100);
   }, [position, buffered, duration]);
 
+  const reanimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: progress.value,
+    };
+  }, []);
+
+  useEffect(() => {
+    if (state == 'playing') {
+      progress.value = withTiming(1, {duration: 500});
+    }
+  }, [state]);
+
   return (
-    <Animated.View style={styles.container}>
+    <Animated.View style={[styles.container, reanimatedStyle]}>
       <View
         style={[
           styles.slider,
@@ -39,7 +61,12 @@ const Player = ({
       />
       <View style={styles.blurContainer}>
         <View style={styles.detailsContainer}>
-          <Image source={{uri: image}} style={styles.imageContainer} />
+          {cover ? (
+            <Image source={{uri: cover}} style={styles.imageContainer} />
+          ) : (
+            <></>
+          )}
+
           <View style={styles.textContainer}>
             <Text numberOfLines={1} style={styles.artistText}>
               {artist}

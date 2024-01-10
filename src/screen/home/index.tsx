@@ -1,8 +1,8 @@
 import React from 'react';
-import {ScrollView} from 'react-native';
 import styles from './style';
 import {AlbumCard} from '../../components';
 import {useRealm} from '../../context';
+import Animated from 'react-native-reanimated';
 
 const Home = (props: any) => {
   const realm = useRealm();
@@ -35,9 +35,9 @@ const Home = (props: any) => {
   const goToArtist = (artist: any) => {};
 
   return (
-    <ScrollView style={styles.container}>
+    <Animated.ScrollView style={styles.container}>
       <AlbumCard goToAlbum={goToAlbum} goToArtist={goToArtist} />
-    </ScrollView>
+    </Animated.ScrollView>
   );
 };
 

@@ -5,7 +5,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {PlayerProvider, RealmProvider} from './src/context';
-
+import {Player} from './src/components';
 StatusBar.setHidden(true);
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +32,7 @@ const App = () => {
             </NavigationContainer>
           </SafeAreaView>
         </SafeAreaProvider>
+        <Player />
       </PlayerProvider>
     </RealmProvider>
   );

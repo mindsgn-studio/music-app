@@ -1,29 +1,25 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './style';
-import {useRealm} from '../../context';
+import {usePlayer} from '../../context';
 
 const TrackCard = ({tracks}: {tracks: any}) => {
+  const {addTrack} = usePlayer();
+
   return (
     <View style={styles.container}>
       {tracks.map((track: any) => {
         return (
-          <View style={styles.card} key={track._id}>
+          <TouchableOpacity
+            style={styles.card}
+            key={track._id}
+            onPress={() => addTrack(track)}>
             <View style={styles.detailsContainer}>
-              <TouchableOpacity>
-                <Text style={styles.albumText}>{track.title}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text style={styles.artistText}>{track.artist}</Text>
-              </TouchableOpacity>
+              <Text style={styles.albumText}>{track.title}</Text>
+
+              <Text style={styles.artistText}>{track.artist}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         );
       })}
     </View>

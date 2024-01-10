@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {PlayerInterface} from '../@types/types';
+import {PlayerInterface, PlayerStateInterface} from '../@types/types';
 import {useRealm} from './trackContext';
 import {
   requestMultiple,
@@ -15,11 +15,21 @@ import {
 } from 'react-native-permissions';
 import RNFS from 'react-native-fs';
 import {NativeModules} from 'react-native';
+import TrackPlayer, {State} from 'react-native-track-player';
 const {Player} = NativeModules;
 
 const PlayerContext = createContext<PlayerInterface>({
   isReady: false,
   error: false,
+  play: () => {},
+  addTrack: () => {},
+  removeTrack: () => {},
+  playerState: {
+    artist: null,
+    title: null,
+    cover: null,
+    state: 'idle',
+  },
 });
 
 function usePlayer(): any {
@@ -36,8 +46,13 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     error: false,
     message: '',
   });
+  const [playerState, setPlayerState] = useState<PlayerStateInterface>({
+    artist: null,
+    title: null,
+    cover: null,
+    state: 'idle',
+  });
   const [isReady, setIsReady] = useState<boolean>(false);
-  const [filesList, setFilesList] = useState<string[]>([]);
 
   const crawlDirectories = async (directory: any) => {
     try {
@@ -150,7 +165,7 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     crawlDirectories(startDirectory)
       .then(mp3Files => {
         if (mp3Files.length !== 0) {
-          setFilesList(mp3Files);
+          getMetadata(mp3Files);
         }
       })
       .catch((error: any) => {
@@ -208,8 +223,8 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       });
   };
 
-  const getMetadata = async () => {
-    await filesList.map(async (file: any) => {
+  const getMetadata = async (mp3Files: string[]) => {
+    await mp3Files.map(async (file: any) => {
       await Player.getMetadata(file, async (err, metadata) => {
         if (err) {
           console.log(err);
@@ -230,17 +245,72 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     }, 10000);
   };
 
-  useEffect(() => {
-    if (filesList.length !== 0) {
-      getMetadata();
+  const setupPlayer = async () => {
+    try {
+      await TrackPlayer.setupPlayer();
+    } catch (error) {}
+  };
+
+  const play = async () => {
+    try {
+      console.log('playing');
+      TrackPlayer.play();
+    } catch (error) {
+      console.log(error);
     }
-  }, [filesList]);
+  };
+
+  const addTrack = async (track: any) => {
+    try {
+      const data = {
+        url: `file://${track.url}`,
+        title: track.title,
+        artist: track.artist,
+        artwork: `file://${track.cover}`,
+        duration: track.duration,
+      };
+
+      setPlayerState({
+        ...playerState,
+        artist: track.artist,
+        title: track.title,
+        cover: `file://${track.cover}`,
+      });
+
+      const state = await TrackPlayer.getState();
+
+      if (state === State.Playing || state === State.Paused) {
+        await TrackPlayer.reset();
+        await TrackPlayer.remove([0]);
+        await TrackPlayer.add([data]);
+        await TrackPlayer.play();
+      }
+
+      await TrackPlayer.add([data]);
+      await TrackPlayer.play();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeTrack = async () => {};
 
   useEffect(() => {
     checkMediaAudioPermission();
   }, []);
 
-  return <PlayerContext.Provider {...props} value={{isReady, error}} />;
+  useEffect(() => {
+    if (isReady) {
+      setupPlayer();
+    }
+  }, [isReady]);
+
+  return (
+    <PlayerContext.Provider
+      {...props}
+      value={{isReady, error, addTrack, removeTrack, play, playerState}}
+    />
+  );
 };
 
 export {PlayerProvider, usePlayer};
