@@ -15,7 +15,7 @@ const AlbumCard = ({
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const albumResponse: any = realm.objects('Albums');
+    const albumResponse: any = realm.objects('Albums').sorted('album');
     if (albumResponse.length === 0) {
     } else {
       setData(albumResponse);

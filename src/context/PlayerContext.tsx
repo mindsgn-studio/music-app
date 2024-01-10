@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import {PlayerInterface, PlayerStateInterface} from '../@types/types';
-import {useRealm} from './trackContext';
+import {useRealm} from './realmContext';
 import {
   requestMultiple,
   checkMultiple,
@@ -54,6 +54,20 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
   });
   const [isReady, setIsReady] = useState<boolean>(false);
 
+  const deleteTracks = async (collection: string) => {
+    try {
+      realm.write(() => {
+        const tracksToDelete = realm.objects(collection);
+
+        realm.delete(tracksToDelete);
+      });
+
+      console.log(`${collection} deleted successfully.`);
+    } catch (error) {
+      console.error('Error deleting Tracks:', error);
+    }
+  };
+
   const crawlDirectories = async (directory: any) => {
     try {
       const files: any = await RNFS.readDir(directory);
@@ -94,6 +108,23 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     }
   };
 
+  const split = (inputString: string) => {
+    try {
+      const parts = inputString.split('/');
+      if (!parts[0]) {
+        parts[0] = '1';
+      }
+
+      if (!parts[1]) {
+        parts[1] = '1';
+      }
+
+      return [parseInt(parts[0]), parseInt(parts[1])];
+    } catch (error: any) {
+      return [parseInt('1'), parseInt('1')];
+    }
+  };
+
   const AddToDatabase = async (metadata: any) => {
     try {
       const path = await saveBase64AsImage(
@@ -117,6 +148,8 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
             title: metadata.title,
             album: metadata.album,
             url: metadata.url,
+            trackNumber: split(metadata.trackNumber)[0],
+            discNumber: split(metadata.discNumber)[0],
             cover: path,
             duration: metadata.duration ? parseInt(metadata.duration) : null,
             createdAt: new Date(),
@@ -155,7 +188,7 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
           });
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
     }
   };
@@ -173,7 +206,11 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       });
   };
 
-  const checkMediaAudioPermission = () => {
+  const checkMediaAudioPermission = async () => {
+    await deleteTracks('Tracks');
+    await deleteTracks('Albums');
+    await deleteTracks('Artists');
+
     checkMultiple([
       PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION,
       PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
@@ -225,7 +262,7 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
 
   const getMetadata = async (mp3Files: string[]) => {
     await mp3Files.map(async (file: any) => {
-      await Player.getMetadata(file, async (err, metadata) => {
+      await Player.getMetadata(file, async (err: any, metadata: any) => {
         if (err) {
           console.log(err);
           return;
@@ -248,7 +285,7 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
   const setupPlayer = async () => {
     try {
       await TrackPlayer.setupPlayer();
-    } catch (error) {}
+    } catch (error: any) {}
   };
 
   const play = async () => {

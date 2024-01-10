@@ -58,6 +58,8 @@ class Tracks extends Realm.Object<Tracks> {
       album: 'string?',
       artist: 'string?',
       cover: 'string?',
+      trackNumber: 'int?',
+      discNumber: 'int?',
       createdAt: 'date',
     },
     primaryKey: '_id',
@@ -66,7 +68,7 @@ class Tracks extends Realm.Object<Tracks> {
 
 const realmConfig: Realm.Configuration = {
   schema: [Tracks, Artists, Albums, History],
-  schemaVersion: 20,
+  schemaVersion: 24,
 };
 
 const {RealmProvider, useRealm, useObject, useQuery} =

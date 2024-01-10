@@ -10,9 +10,10 @@ const Home = (props: any) => {
 
   const goToAlbum = (album: string) => {
     try {
-      const queryResponse = realm
+      const queryResponse: any = realm
         .objects('Tracks')
-        .filtered('album == $0', `${album}`);
+        .filtered('album == $0', `${album}`)
+        .sorted('discNumber');
 
       const queryAlbum = realm
         .objects('Albums')
@@ -32,11 +33,9 @@ const Home = (props: any) => {
     }
   };
 
-  const goToArtist = (artist: any) => {};
-
   return (
     <Animated.ScrollView style={styles.container}>
-      <AlbumCard goToAlbum={goToAlbum} goToArtist={goToArtist} />
+      <AlbumCard goToAlbum={goToAlbum} goToArtist={() => {}} />
     </Animated.ScrollView>
   );
 };
