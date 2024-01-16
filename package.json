@@ -8,8 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "android:beta": "yarn version --minor && fastlane android beta",
-    "android:release": "yarn version --major && fastlane android release",
+    "android:beta": "yarn version --minor && bundle exec fastlane android beta",
     "postinstall": "rn-nodeify --install buffer,stream,assert,events,crypto,vm,process,fs,asyncstorage-down --hack"
   },
   "husky": {
@@ -55,7 +54,6 @@
     "react-native-restart": "^0.0.27",
     "react-native-safe-area-context": "^4.7.1",
     "react-native-screens": "^3.20.0",
-    "react-native-sound": "^0.11.2",
     "react-native-track-player": "^3.2.0",
     "react-native-udp": "tradle/react-native-udp",
     "react-native-vector-icons": "^9.2.0",

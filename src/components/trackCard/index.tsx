@@ -7,7 +7,7 @@ const TrackCard = ({tracks}: {tracks: any[]}) => {
   const [trackList, setTrackList] = useState(tracks);
   const {addTrack} = usePlayer();
 
-  const customSort = (trackA, trackB) => {
+  const customSort = (trackA: any, trackB: any) => {
     if (
       !trackA ||
       !trackB ||
@@ -47,7 +47,6 @@ const TrackCard = ({tracks}: {tracks: any[]}) => {
             </View>
             <View style={styles.detailsContainer}>
               <Text style={styles.albumText}>{track.title}</Text>
-
               <Text style={styles.artistText}>{track.artist}</Text>
             </View>
           </TouchableOpacity>
