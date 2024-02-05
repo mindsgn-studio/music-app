@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import {PlayerInterface, PlayerStateInterface} from '../@types/types';
 import {useRealm} from './realmContext';
+
 import {
   requestMultiple,
   checkMultiple,
@@ -16,6 +17,7 @@ import {
 import RNFS from 'react-native-fs';
 import {NativeModules} from 'react-native';
 import TrackPlayer, {State} from 'react-native-track-player';
+
 const {Player} = NativeModules;
 
 const PlayerContext = createContext<PlayerInterface>({
