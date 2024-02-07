@@ -33,7 +33,7 @@
     "console-browserify": "^1.2.0",
     "ethers": "^6.7.0",
     "fs": "^0.0.1-security",
-    "jetifier": "^2.0.0",
+    "jetifier": "1.6.6",
     "node-libs-browser": "^2.2.1",
     "node-taglib-sharp-extend": "^0.2.3",
     "path-browserify": "^0.0.0",
