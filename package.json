@@ -3,12 +3,12 @@
   "version": "2.28.0",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android": "npx jetify && react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
+    "start": "npx jetify && react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "android:beta": "yarn version --minor && bundle exec fastlane android beta",
+    "android:beta": "npx jetify && yarn version --minor && bundle exec fastlane android beta",
     "postinstall": "rn-nodeify --install buffer,stream,assert,events,crypto,vm,process,fs,asyncstorage-down --hack"
   },
   "husky": {
