@@ -1,11 +1,12 @@
 import {StyleSheet} from 'react-native';
+import {WIDTH} from '../../constants';
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    width: '100%',
+    width: WIDTH,
     height: 80,
-    bottom: 60,
+    bottom: 0,
     zIndex: 1,
     backgroundColor: '#000000',
     padding: 5,
@@ -38,11 +39,16 @@ const styles = StyleSheet.create({
   textContainer: {
     paddingLeft: 10,
   },
-  artistText: {color: 'white'},
+  artistText: {
+    fontFamily: 'SF-Pro-Rounded-Bold',
+    color: 'gray',
+    fontSize: 10,
+  },
   titleText: {
     fontSize: 21,
     color: '#E0E0E0',
     fontWeight: 'bold',
+    fontFamily: 'SF-Pro-Rounded-Heavy',
   },
   button: {
     display: 'flex',

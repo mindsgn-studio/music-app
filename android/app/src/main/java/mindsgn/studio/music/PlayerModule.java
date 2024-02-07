@@ -34,8 +34,10 @@ public class PlayerModule extends ReactContextBaseJavaModule {
             String albumArtist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST);
             String trackNumber = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
             String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            String discNumber = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER);
+            String genre = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
+            String compilation = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPILATION);
             String year = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
-
 
             byte[] coverArtBytes = mmr.getEmbeddedPicture();
             String base64CoverArt = (coverArtBytes != null) ? Base64.encodeToString(coverArtBytes, Base64.DEFAULT) : null;
@@ -49,6 +51,9 @@ public class PlayerModule extends ReactContextBaseJavaModule {
             metadata.putString("duration", duration);
             metadata.putString("trackNumber", trackNumber);
             metadata.putString("year", year);
+            metadata.putString("genre", genre);
+            metadata.putString("compilation", compilation);
+            metadata.putString("discNumber", discNumber);
             metadata.putString("cover", base64CoverArt);
 
             cb.invoke(null, metadata);

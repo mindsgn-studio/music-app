@@ -1,13 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
+import {View, Text, TouchableOpacity, ImageBackground} from 'react-native';
 import styles from './style';
 import {useRealm} from '../../context';
+import Animated from 'react-native-reanimated';
 
 const AlbumCard = ({
   goToAlbum,
@@ -20,7 +15,7 @@ const AlbumCard = ({
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const albumResponse: any = realm.objects('Albums');
+    const albumResponse: any = realm.objects('Albums').sorted('album');
     if (albumResponse.length === 0) {
     } else {
       setData(albumResponse);

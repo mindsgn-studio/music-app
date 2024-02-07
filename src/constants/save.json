@@ -1,167 +1,167 @@
 {
     "flags": {
-        "experimental_indicator": false, 
-        "extended_header": false, 
-        "footer_present": false, 
+        "experimental_indicator": false,
+        "extended_header": false,
+        "footer_present": false,
         "unsynchronisation": false
-    }, 
-    "major": 3, 
-    "revision": 0, 
-    "size": 66228, 
+    },
+    "major": 3,
+    "revision": 0,
+    "size": 66228,
     "tags": {
         "APIC": {
-            "data": [Object], 
-            "description": "Attached picture", 
-            "id": "APIC", 
+            "data": [Object],
+            "description": "Attached picture",
+            "id": "APIC",
             "size": 34262
-        }, 
+        },
         "TALB": {
-            "data": "Mr. Morale & The Big Steppers", 
-            "description": "Album/Movie/Show title", 
-            "id": "TALB", 
+            "data": "Mr. Morale & The Big Steppers",
+            "description": "Album/Movie/Show title",
+            "id": "TALB",
             "size": 61
-        }, 
+        },
         "TCOM": {
-            "data": "Craig Balmoris", 
-            "description": "Composer", 
-            "id": "TCOM", 
+            "data": "Craig Balmoris",
+            "description": "Composer",
+            "id": "TCOM",
             "size": 31
-        }, 
+        },
         "TCON": {
-            "data": "", 
-            "description": "Content type", 
-            "id": "TCON", 
+            "data": "",
+            "description": "Content type",
+            "id": "TCON",
             "size": 5
-        }, 
+        },
         "TCOP": {
-            "data": "PMEDIA", 
-            "description": "Copyright message", 
-            "id": "TCOP", 
+            "data": "PMEDIA",
+            "description": "Copyright message",
+            "id": "TCOP",
             "size": 7
-        }, 
+        },
         "TENC": {
-            "data": "PMEDIA", 
-            "description": "Encoded by", 
-            "id": "TENC", 
+            "data": "PMEDIA",
+            "description": "Encoded by",
+            "id": "TENC",
             "size": 7
-        }, 
+        },
         "TIT1": {
             "data": "PMEDIA",
-            "description": "Content group description", 
-            "id": "TIT1", 
+            "description": "Content group description",
+            "id": "TIT1",
             "size": 7
-        }, 
+        },
         "TIT2": {
-            "data": "Savior (Interlude)", 
-            "description": "Title/songname/content description", 
-            "id": "TIT2", 
+            "data": "Savior (Interlude)",
+            "description": "Title/songname/content description",
+            "id": "TIT2",
             "size": 39
-        }, 
+        },
         "TIT3": {
-            "data": "PMEDIA", 
-            "description": "Subtitle/Description refinement", 
-            "id": "TIT3", 
+            "data": "PMEDIA",
+            "description": "Subtitle/Description refinement",
+            "id": "TIT3",
             "size": 7
-        }, 
+        },
         "TLEN": {
             "data": "152000",
-             "description": "Length", 
-             "id": "TLEN", 
+             "description": "Length",
+             "id": "TLEN",
              "size": 7
-        }, 
+        },
         "TMED": {
-            "data": "PMEDIA", 
-            "description": "Media type", 
-            "id": "TMED", 
+            "data": "PMEDIA",
+            "description": "Media type",
+            "id": "TMED",
             "size": 7
-        }, 
+        },
         "TPE1": {
-            "data": "Kendrick Lamar", 
-            "description": "Lead performer(s)/Soloist(s)", 
-            "id": "TPE1", 
+            "data": "Kendrick Lamar",
+            "description": "Lead performer(s)/Soloist(s)",
+            "id": "TPE1",
             "size": 31
-        }, 
+        },
         "TPE2": {
-            "data": "Kendrick Lamar", 
-            "description": "Band/orchestra/accompaniment", 
-            "id": "TPE2", 
+            "data": "Kendrick Lamar",
+            "description": "Band/orchestra/accompaniment",
+            "id": "TPE2",
             "size": 31
-        }, 
+        },
         "TPE3": {
-            "data": "PMEDIA", 
-            "description": "Conductor/performer refinement", 
-            "id": "TPE3", 
+            "data": "PMEDIA",
+            "description": "Conductor/performer refinement",
+            "id": "TPE3",
             "size": 7
-        }, 
+        },
         "TPOS": {
-            "data": "2/2", 
-            "description": "Part of a set", 
-            "id": "TPOS", 
+            "data": "2/2",
+            "description": "Part of a set",
+            "id": "TPOS",
             "size": 5
-        }, 
+        },
         "TPUB": {
-            "data": "PMEDIA", 
-            "description": "Publisher", 
-            "id": "TPUB", 
+            "data": "PMEDIA",
+            "description": "Publisher",
+            "id": "TPUB",
             "size": 7
-        }, 
+        },
         "TRCK": {
-            "data": "4/9", 
-            "description": "Track number/Position in set", 
-            "id": "TRCK", 
+            "data": "4/9",
+            "description": "Track number/Position in set",
+            "id": "TRCK",
             "size": 5
-        }, 
+        },
         "TSRC": {
-            "data": "USUM72208982", 
-            "description": "ISRC (international standard recording code)", 
-            "id": "TSRC", 
+            "data": "USUM72208982",
+            "description": "ISRC (international standard recording code)",
+            "id": "TSRC",
             "size": 27
-        }, 
+        },
         "TXXX": [
-            [Object], 
-            [Object], 
-            [Object], 
-            [Object], 
-            [Object], 
-            [Object], 
+            [Object],
+            [Object],
+            [Object],
+            [Object],
+            [Object],
+            [Object],
             [Object]
-        ], 
+        ],
         "TYER": {
-            "data": "2022", 
-            "description": "Year", 
-            "id": "TYER", 
+            "data": "2022",
+            "description": "Year",
+            "id": "TYER",
             "size": 5
-        }, 
+        },
         "WOAF": {
-            "data": "www.t.me/pmedia_music", 
-            "description": "Official audio file webpage", 
-            "id": "WOAF", 
+            "data": "www.t.me/pmedia_music",
+            "description": "Official audio file webpage",
+            "id": "WOAF",
             "size": 21
-        }, 
+        },
         "WOAR": {
-            "data": "www.t.me/pmedia_music", 
-            "description": "Official artist/performer webpage", 
-            "id": "WOAR", 
+            "data": "www.t.me/pmedia_music",
+            "description": "Official artist/performer webpage",
+            "id": "WOAR",
             "size": 21
-        }, 
+        },
         "WOAS": {
-            "data": "www.t.me/pmedia_music", 
-            "description": "Official audio source webpage", 
-            "id": "WOAS", 
+            "data": "www.t.me/pmedia_music",
+            "description": "Official audio source webpage",
+            "id": "WOAS",
             "size": 21
-        }, 
-        "album": "Mr. Morale & The Big Steppers", 
-        "artist": "Kendrick Lamar", 
+        },
+        "album": "Mr. Morale & The Big Steppers",
+        "artist": "Kendrick Lamar",
         "picture": {
-            "data": [Array], 
-            "description": "PMEDIA", 
-            "format": "image/jpeg", 
+            "data": [Array],
+            "description": "PMEDIA",
+            "format": "image/jpeg",
             "type": "Cover (front)"
-            }, 
-        "title": "Savior (Interlude)", 
-        "track": "4/9", 
+            },
+        "title": "Savior (Interlude)",
+        "track": "4/9",
         "year": "2022"
-    }, 
-    "type": "ID3", 
+    },
+    "type": "ID3",
     "version": "2.3.0"
 }

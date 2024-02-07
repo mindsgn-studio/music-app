@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     fex: 1,
     flexDirection: 'row',
     width: '100%',
-    height: 100,
+    height: 30,
     marginVertical: 10,
     borderRadius: 50,
   },

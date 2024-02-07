@@ -6,8 +6,9 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {PlayerInterface} from '../@types/types';
-import {useRealm} from './trackContext';
+import {PlayerInterface, PlayerStateInterface} from '../@types/types';
+import {useRealm} from './realmContext';
+
 import {
   requestMultiple,
   checkMultiple,
@@ -15,11 +16,22 @@ import {
 } from 'react-native-permissions';
 import RNFS from 'react-native-fs';
 import {NativeModules} from 'react-native';
+import TrackPlayer, {State} from 'react-native-track-player';
+
 const {Player} = NativeModules;
 
 const PlayerContext = createContext<PlayerInterface>({
   isReady: false,
   error: false,
+  play: () => {},
+  addTrack: () => {},
+  removeTrack: () => {},
+  playerState: {
+    artist: null,
+    title: null,
+    cover: null,
+    state: 'idle',
+  },
 });
 
 function usePlayer(): any {
@@ -36,8 +48,27 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     error: false,
     message: '',
   });
+  const [playerState, setPlayerState] = useState<PlayerStateInterface>({
+    artist: null,
+    title: null,
+    cover: null,
+    state: 'idle',
+  });
   const [isReady, setIsReady] = useState<boolean>(false);
-  const [filesList, setFilesList] = useState<string[]>([]);
+
+  const deleteTracks = async (collection: string) => {
+    try {
+      realm.write(() => {
+        const tracksToDelete = realm.objects(collection);
+
+        realm.delete(tracksToDelete);
+      });
+
+      console.log(`${collection} deleted successfully.`);
+    } catch (error) {
+      console.error('Error deleting Tracks:', error);
+    }
+  };
 
   const crawlDirectories = async (directory: any) => {
     try {
@@ -79,6 +110,23 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     }
   };
 
+  const split = (inputString: string) => {
+    try {
+      const parts = inputString.split('/');
+      if (!parts[0]) {
+        parts[0] = '1';
+      }
+
+      if (!parts[1]) {
+        parts[1] = '1';
+      }
+
+      return [parseInt(parts[0]), parseInt(parts[1])];
+    } catch (error: any) {
+      return [parseInt('1'), parseInt('1')];
+    }
+  };
+
   const AddToDatabase = async (metadata: any) => {
     try {
       const path = await saveBase64AsImage(
@@ -102,6 +150,8 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
             title: metadata.title,
             album: metadata.album,
             url: metadata.url,
+            trackNumber: split(metadata.trackNumber)[0],
+            discNumber: split(metadata.discNumber)[0],
             cover: path,
             duration: metadata.duration ? parseInt(metadata.duration) : null,
             createdAt: new Date(),
@@ -140,7 +190,7 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
           });
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
     }
   };
@@ -150,7 +200,7 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     crawlDirectories(startDirectory)
       .then(mp3Files => {
         if (mp3Files.length !== 0) {
-          setFilesList(mp3Files);
+          getMetadata(mp3Files);
         }
       })
       .catch((error: any) => {
@@ -158,7 +208,11 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       });
   };
 
-  const checkMediaAudioPermission = () => {
+  const checkMediaAudioPermission = async () => {
+    await deleteTracks('Tracks');
+    await deleteTracks('Albums');
+    await deleteTracks('Artists');
+
     checkMultiple([
       PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION,
       PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
@@ -208,9 +262,9 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       });
   };
 
-  const getMetadata = async () => {
-    await filesList.map(async (file: any) => {
-      await Player.getMetadata(file, async (err, metadata) => {
+  const getMetadata = async (mp3Files: string[]) => {
+    await mp3Files.map(async (file: any) => {
+      await Player.getMetadata(file, async (err: any, metadata: any) => {
         if (err) {
           console.log(err);
           return;
@@ -230,17 +284,90 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     }, 10000);
   };
 
-  useEffect(() => {
-    if (filesList.length !== 0) {
-      getMetadata();
+  const setupPlayer = async () => {
+    try {
+      await TrackPlayer.setupPlayer();
+    } catch (error: any) {}
+  };
+
+  const play = async () => {
+    try {
+      console.log('playing');
+      TrackPlayer.play();
+    } catch (error) {
+      console.log(error);
     }
-  }, [filesList]);
+  };
+
+  const addTrack = async (tracks: any [], index: number) => {
+    try {
+      await TrackPlayer.pause();
+      await TrackPlayer.reset();
+      
+      const queue =  await TrackPlayer.getQueue();
+
+      queue.map(async(track: any, index: number)=>{
+        await TrackPlayer.remove([index]);  
+      })
+
+      tracks.map(async(track: any)=>{
+        const data = {
+          url: `file://${track.url}`,
+          title: track.title,
+          artist: track.artist,
+          artwork: `file://${track.cover}`,
+          duration: track.duration,
+        };
+
+        await TrackPlayer.add([data]);
+      })
+
+      setPlayerState({
+        ...playerState,
+        artist: tracks[index].artist,
+        title: tracks[index].title,
+        cover: `file://${tracks[index].cover}`,
+      });
+
+      await TrackPlayer.skip(index);
+      const state = await TrackPlayer.getState();
+      await TrackPlayer.play();
+      
+      await TrackPlayer.updateOptions({
+          capabilities: [
+              Capability.Play,
+              Capability.Pause,
+              Capability.SkipToNext,
+              Capability.SkipToPrevious,
+              Capability.Stop,
+          ],
+
+          compactCapabilities: [Capability.Play, Capability.Pause],
+      });
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeTrack = async () => {};
 
   useEffect(() => {
     checkMediaAudioPermission();
   }, []);
 
-  return <PlayerContext.Provider {...props} value={{isReady, error}} />;
+  useEffect(() => {
+    if (isReady) {
+      setupPlayer();
+    }
+  }, [isReady]);
+
+  return (
+    <PlayerContext.Provider
+      {...props}
+      value={{isReady, error, addTrack, removeTrack, play, playerState}}
+    />
+  );
 };
 
 export {PlayerProvider, usePlayer};

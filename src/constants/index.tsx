@@ -1,3 +1,5 @@
+import {Dimensions} from 'react-native';
+
 export const PLAY = 'PLAY';
 export const PAUSE = 'PAUSE';
 export const PLAY_NEW = 'PLAY_NEW';
@@ -10,3 +12,6 @@ export const ADD_TO_RECENT = 'ADD_TO_RECENT';
 export const SEARCH = 'SEARCH';
 export const GET_RANDOM = 'SEARCH';
 export const ERROR = 'GET_RANDOM';
+
+export const HEIGHT = Dimensions.get('window').height;
+export const WIDTH = Dimensions.get('window').width;
