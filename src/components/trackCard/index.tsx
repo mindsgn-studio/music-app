@@ -36,12 +36,12 @@ const TrackCard = ({tracks}: {tracks: any[]}) => {
 
   return (
     <View style={styles.container}>
-      {trackList.map((track: any) => {
+      {trackList.map((track: any, index: number) => {
         return (
           <TouchableOpacity
             style={styles.card}
             key={track._id}
-            onPress={() => addTrack(track)}>
+            onPress={() => addTrack(tracks, index)}>
             <View style={styles.detailsContainer}>
               <Text style={styles.albumText}>{track.trackNumber}</Text>
             </View>

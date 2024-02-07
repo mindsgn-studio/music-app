@@ -299,34 +299,52 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     }
   };
 
-  const addTrack = async (track: any) => {
+  const addTrack = async (tracks: any [], index: number) => {
     try {
-      const data = {
-        url: `file://${track.url}`,
-        title: track.title,
-        artist: track.artist,
-        artwork: `file://${track.cover}`,
-        duration: track.duration,
-      };
+      await TrackPlayer.pause();
+      await TrackPlayer.reset();
+      
+      const queue =  await TrackPlayer.getQueue();
+
+      queue.map(async(track: any, index: number)=>{
+        await TrackPlayer.remove([index]);  
+      })
+
+      tracks.map(async(track: any)=>{
+        const data = {
+          url: `file://${track.url}`,
+          title: track.title,
+          artist: track.artist,
+          artwork: `file://${track.cover}`,
+          duration: track.duration,
+        };
+
+        await TrackPlayer.add([data]);
+      })
 
       setPlayerState({
         ...playerState,
-        artist: track.artist,
-        title: track.title,
-        cover: `file://${track.cover}`,
+        artist: tracks[index].artist,
+        title: tracks[index].title,
+        cover: `file://${tracks[index].cover}`,
       });
 
+      await TrackPlayer.skip(index);
       const state = await TrackPlayer.getState();
-
-      if (state === State.Playing || state === State.Paused) {
-        await TrackPlayer.reset();
-        await TrackPlayer.remove([0]);
-        await TrackPlayer.add([data]);
-        await TrackPlayer.play();
-      }
-
-      await TrackPlayer.add([data]);
       await TrackPlayer.play();
+      
+      await TrackPlayer.updateOptions({
+          capabilities: [
+              Capability.Play,
+              Capability.Pause,
+              Capability.SkipToNext,
+              Capability.SkipToPrevious,
+              Capability.Stop,
+          ],
+
+          compactCapabilities: [Capability.Play, Capability.Pause],
+      });
+
     } catch (error) {
       console.log(error);
     }
