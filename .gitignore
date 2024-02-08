@@ -24,7 +24,7 @@ ios/.xcode.env.local
 # *.properties
 *.env
 fastlane/README.md
-play-store-credentials.json
+googleplay.json
 
 # Android/IntelliJ
 #
@@ -45,7 +45,7 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
-*.keystore
+# *.keystore
 !debug.keystore
 src/components/@declare/
 
