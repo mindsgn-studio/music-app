@@ -207,13 +207,13 @@ android {
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
-            universalApk false  // If true, also generate a universal APK
+            universalApk true
             include (*reactNativeArchitectures())
         }
     }
     signingConfigs {
         release {
-            storeFile rootProject.file("app/appcenterpublish.keystore")
+            storeFile rootProject.file("app/music.keystore")
             storePassword System.getProperty("APPCENTER_KEYSTORE_PASSWORD")
             keyAlias System.getProperty("APPCENTER_KEY_ALIAS")
             keyPassword System.getProperty("APPCENTER_KEY_PASSWORD")
