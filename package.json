@@ -1,6 +1,6 @@
 {
   "name": "MIXO",
-  "version": "2.32.0",
+  "version": "2.33.0",
   "private": true,
   "scripts": {
     "android": "npx jetify && react-native run-android",
@@ -8,7 +8,7 @@
     "start": "npx jetify && react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "android:beta": "npx jetify && yarn version --minor && bundle exec fastlane android beta",
+    "android:beta": "yarn version --minor && bundle exec fastlane android beta",
     "postinstall": "rn-nodeify --install buffer,stream,assert,events,crypto,vm,process,fs,asyncstorage-down --hack"
   },
   "husky": {
