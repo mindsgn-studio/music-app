@@ -16,16 +16,16 @@ import {
 } from 'react-native-permissions';
 import RNFS from 'react-native-fs';
 import {NativeModules} from 'react-native';
-import TrackPlayer, {State} from 'react-native-track-player';
+import TrackPlayer, {Capability} from 'react-native-track-player';
 
 const {Player} = NativeModules;
 
-const PlayerContext = createContext<PlayerInterface>({
+const PlayerContext = createContext<any>({
   isReady: false,
-  error: false,
   play: () => {},
   addTrack: () => {},
   removeTrack: () => {},
+  searchTracks: () => {},
   playerState: {
     artist: null,
     title: null,
@@ -42,12 +42,8 @@ function usePlayer(): any {
   return context;
 }
 
-const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
+const PlayerProvider = (props: {children: ReactNode}): any => {
   const realm = useRealm();
-  const [error, setError] = useState<any>({
-    error: false,
-    message: '',
-  });
   const [playerState, setPlayerState] = useState<PlayerStateInterface>({
     artist: null,
     title: null,
@@ -55,6 +51,7 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     state: 'idle',
   });
   const [isReady, setIsReady] = useState<boolean>(false);
+  const [songs, setSongs] = useState([]);
 
   const deleteTracks = async (collection: string) => {
     try {
@@ -65,7 +62,7 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       });
 
       console.log(`${collection} deleted successfully.`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting Tracks:', error);
     }
   };
@@ -129,6 +126,8 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
 
   const AddToDatabase = async (metadata: any) => {
     try {
+      console.log(metadata);
+
       const path = await saveBase64AsImage(
         metadata.cover,
         `${metadata.artist}-${metadata.album}`,
@@ -196,22 +195,27 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
   };
 
   const getAllFiles = () => {
-    let startDirectory = RNFS.ExternalStorageDirectoryPath;
-    crawlDirectories(startDirectory)
-      .then(mp3Files => {
-        if (mp3Files.length !== 0) {
-          getMetadata(mp3Files);
-        }
-      })
-      .catch((error: any) => {
-        console.error('Error:', error);
-      });
+    try {
+      let startDirectory = RNFS.DownloadDirectoryPath;
+      crawlDirectories(startDirectory)
+        .then((mp3Files: any) => {
+          console.log('files', mp3Files);
+          if (mp3Files.length !== 0) {
+            getMetadata(mp3Files);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const checkMediaAudioPermission = async () => {
-    await deleteTracks('Tracks');
-    await deleteTracks('Albums');
-    await deleteTracks('Artists');
+    //await deleteTracks('Tracks');
+    //await deleteTracks('Albums');
+    //await deleteTracks('Artists');
 
     checkMultiple([
       PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION,
@@ -220,15 +224,18 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     ]).then(statuses => {
       if (statuses[PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION] === 'denied') {
         requestMediaAudioPermission();
+        return;
       } else if (
         statuses[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] === 'denied'
       ) {
         requestMediaAudioPermission();
+        return;
       } else if (statuses[PERMISSIONS.ANDROID.READ_MEDIA_AUDIO] === 'denied') {
         requestMediaAudioPermission();
-      } else {
-        getAllFiles();
+        return;
       }
+
+      getAllFiles();
     });
   };
 
@@ -241,24 +248,22 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
       .then(statuses => {
         if (statuses[PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION] === 'denied') {
           requestMediaAudioPermission();
+          return;
         } else if (
           statuses[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] === 'denied'
         ) {
           requestMediaAudioPermission();
+          return;
         } else if (
           statuses[PERMISSIONS.ANDROID.READ_MEDIA_AUDIO] === 'denied'
         ) {
           requestMediaAudioPermission();
-        } else {
-          getAllFiles();
+          return;
         }
+        getAllFiles();
       })
       .catch((error: any) => {
-        setError({
-          error: true,
-          title: 'Permission Error',
-          message: 'Please allow storage & media permission',
-        });
+        console.log(error);
       });
   };
 
@@ -299,73 +304,79 @@ const PlayerProvider = (props: {children: ReactNode}): ReactElement => {
     }
   };
 
-  const addTrack = async (tracks: any [], index: number) => {
+  const addTrack = async (tracks: any[]) => {
     try {
       await TrackPlayer.pause();
       await TrackPlayer.reset();
-      
-      const queue =  await TrackPlayer.getQueue();
 
-      queue.map(async(track: any, index: number)=>{
-        await TrackPlayer.remove([index]);  
-      })
+      const queue = await TrackPlayer.getQueue();
 
-      tracks.map(async(track: any)=>{
-        const data = {
-          url: `file://${track.url}`,
-          title: track.title,
-          artist: track.artist,
-          artwork: `file://${track.cover}`,
-          duration: track.duration,
-        };
-
-        await TrackPlayer.add([data]);
-      })
-
-      setPlayerState({
-        ...playerState,
-        artist: tracks[index].artist,
-        title: tracks[index].title,
-        cover: `file://${tracks[index].cover}`,
+      queue.map(async (track: any, trackIndex: number) => {
+        await TrackPlayer.remove([trackIndex]);
       });
 
-      await TrackPlayer.skip(index);
-      const state = await TrackPlayer.getState();
-      await TrackPlayer.play();
-      
+      await TrackPlayer.add([...tracks]);
+
       await TrackPlayer.updateOptions({
-          capabilities: [
-              Capability.Play,
-              Capability.Pause,
-              Capability.SkipToNext,
-              Capability.SkipToPrevious,
-              Capability.Stop,
-          ],
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          Capability.Stop,
+        ],
 
-          compactCapabilities: [Capability.Play, Capability.Pause],
+        compactCapabilities: [Capability.Play, Capability.Pause],
       });
 
-    } catch (error) {
+      await TrackPlayer.play();
+    } catch (error: any) {
       console.log(error);
     }
   };
 
   const removeTrack = async () => {};
 
-  useEffect(() => {
-    checkMediaAudioPermission();
-  }, []);
+  const searchTracks = async (search?: string, page?: number) => {
+    let link = 'http://mixo.mindsgn.studio/api';
+
+    if (search && search != '') {
+      link += `?search=${encodeURIComponent(search)}&page=${encodeURIComponent(
+        page,
+      )}&`;
+    }
+
+    if (!search) {
+      link += '/random';
+    }
+
+    const response = await fetch(link);
+
+    if (response.ok) {
+      const data = await response.json();
+      const {tracks} = data;
+      setSongs(tracks);
+    }
+  };
 
   useEffect(() => {
-    if (isReady) {
-      setupPlayer();
-    }
+    checkMediaAudioPermission();
+    setupPlayer();
+    searchTracks();
   }, [isReady]);
 
   return (
     <PlayerContext.Provider
       {...props}
-      value={{isReady, error, addTrack, removeTrack, play, playerState}}
+      value={{
+        isReady,
+        addTrack,
+        removeTrack,
+        play,
+        playerState,
+        songs,
+        searchTracks,
+      }}
     />
   );
 };

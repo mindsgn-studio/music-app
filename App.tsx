@@ -1,5 +1,5 @@
 import React from 'react';
-import {Tabs, Loading, Error, Home, Album, Artist} from './src/screen';
+import {Search, Loading} from './src/screen';
 import {SafeAreaView, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -17,6 +17,11 @@ const App = () => {
           <SafeAreaView
             style={{
               flex: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              alignContent: 'center',
+              width: '100%',
+              backgroundColor: 'black',
             }}>
             <NavigationContainer>
               <Stack.Navigator
@@ -24,15 +29,12 @@ const App = () => {
                   headerShown: false,
                 }}>
                 <Stack.Screen name="Loading" component={Loading} />
-                <Stack.Screen name="Home" component={Home} />
-                <Stack.Screen name="Error" component={Error} />
-                <Stack.Screen name="Album" component={Album} />
-                <Stack.Screen name="Artist" component={Artist} />
+                <Stack.Screen name="Search" component={Search} />
               </Stack.Navigator>
             </NavigationContainer>
+            <Player />
           </SafeAreaView>
         </SafeAreaProvider>
-        <Player />
       </PlayerProvider>
     </RealmProvider>
   );

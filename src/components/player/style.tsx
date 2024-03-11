@@ -1,18 +1,21 @@
 import {StyleSheet} from 'react-native';
-import {WIDTH} from '../../constants';
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    width: WIDTH,
-    height: 80,
     bottom: 0,
+  },
+  playerContainer: {
+    marginVertical: 10,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    height: 60,
     zIndex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     padding: 5,
     display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
   slider: {
     height: 5,

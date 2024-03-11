@@ -16,7 +16,6 @@ const Album = (props: any) => {
         artist={album[0].artist}
         cover={album[0].cover}
       />
-      <TrackCard tracks={tracks} />
     </Animated.ScrollView>
   );
 };

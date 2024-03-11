@@ -2,25 +2,28 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, ImageBackground} from 'react-native';
 import styles from './style';
 import {useRealm} from '../../context';
-import Animated from 'react-native-reanimated';
 
 const AlbumCard = ({
   goToAlbum,
   goToArtist,
+  navigation,
 }: {
   goToAlbum: any;
   goToArtist: any;
+  navigation: any;
 }) => {
+  console.log(navigation);
   const realm = useRealm();
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const albumResponse: any = realm.objects('Albums').sorted('album');
     if (albumResponse.length === 0) {
+      navigation.navigate('Search');
     } else {
       setData(albumResponse);
     }
-  }, []);
+  }, [realm, navigation]);
 
   return (
     <View style={styles.container}>

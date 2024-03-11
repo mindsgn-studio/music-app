@@ -35,7 +35,11 @@ const Home = (props: any) => {
 
   return (
     <Animated.ScrollView style={styles.container}>
-      <AlbumCard goToAlbum={goToAlbum} goToArtist={() => {}} />
+      <AlbumCard
+        goToAlbum={goToAlbum}
+        goToArtist={() => {}}
+        navigation={navigation}
+      />
     </Animated.ScrollView>
   );
 };

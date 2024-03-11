@@ -7,18 +7,13 @@ import {usePlayer} from '../../context';
 
 const Loading: React.FC<any> = (props: any) => {
   const {navigation} = props;
-  const {isReady, error} = usePlayer();
+  const {isReady} = usePlayer();
 
   useEffect(() => {
-    if (isReady) {
-      navigation.replace('Home');
-    }
+    setTimeout(() => {
+      navigation.replace('Search');
+    }, 1000);
   }, [isReady, navigation]);
-
-  useEffect(() => {
-    if (error.error) {
-    }
-  }, [error, navigation]);
 
   return (
     <View style={styles.container}>
