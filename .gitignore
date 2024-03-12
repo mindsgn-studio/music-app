@@ -1,7 +1,8 @@
 # OSX
 #
 .DS_Store
-
+gradle.properties
+music.keystore
 # Xcode
 #
 build/
