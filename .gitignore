@@ -3,6 +3,8 @@
 .DS_Store
 gradle.properties
 music.keystore
+googleplay.json
+
 # Xcode
 #
 build/
