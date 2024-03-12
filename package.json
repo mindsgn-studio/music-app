@@ -1,6 +1,6 @@
 {
   "name": "MIXO",
-  "version": "2.49.0",
+  "version": "2.50.0",
   "private": true,
   "scripts": {
     "android": "npx jetify && react-native run-android",
