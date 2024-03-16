@@ -26,12 +26,6 @@ const PlayerContext = createContext<any>({
   addTrack: () => {},
   removeTrack: () => {},
   searchTracks: () => {},
-  playerState: {
-    artist: null,
-    title: null,
-    cover: null,
-    state: 'idle',
-  },
 });
 
 function usePlayer(): any {
@@ -44,14 +38,8 @@ function usePlayer(): any {
 
 const PlayerProvider = (props: {children: ReactNode}): any => {
   const realm = useRealm();
-  const [playerState, setPlayerState] = useState<PlayerStateInterface>({
-    artist: null,
-    title: null,
-    cover: null,
-    state: 'idle',
-  });
   const [isReady, setIsReady] = useState<boolean>(false);
-  const [songs, setSongs] = useState([]);
+  const [songs, setSongs] = useState<any[]>([]);
 
   const deleteTracks = async (collection: string) => {
     try {
@@ -234,8 +222,6 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
         requestMediaAudioPermission();
         return;
       }
-
-      getAllFiles();
     });
   };
 
@@ -260,7 +246,6 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
           requestMediaAudioPermission();
           return;
         }
-        getAllFiles();
       })
       .catch((error: any) => {
         console.log(error);
@@ -297,14 +282,13 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
 
   const play = async () => {
     try {
-      console.log('playing');
-      TrackPlayer.play();
+      await TrackPlayer.play();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const addTrack = async (tracks: any[]) => {
+  const addTrack = async (tracks: any[], index: number) => {
     try {
       await TrackPlayer.pause();
       await TrackPlayer.reset();
@@ -315,7 +299,20 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
         await TrackPlayer.remove([trackIndex]);
       });
 
-      await TrackPlayer.add([...tracks]);
+      tracks.map(async (track: any) => {
+        const {coverArt, artist, title, link, albumTitle} = track;
+        const data = {
+          url: link,
+          title,
+          artist,
+          album: albumTitle,
+          artwork: coverArt,
+        };
+
+        await TrackPlayer.add([data]);
+      });
+
+      await TrackPlayer.skip(index);
 
       await TrackPlayer.updateOptions({
         capabilities: [
@@ -337,7 +334,11 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
 
   const removeTrack = async () => {};
 
-  const searchTracks = async (search?: string, page?: number) => {
+  const searchTracks = async (
+    search: string,
+    page: number,
+    scrolling: boolean,
+  ) => {
     let link = 'http://mixo.mindsgn.studio/api';
 
     if (search && search != '') {
@@ -355,14 +356,22 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
     if (response.ok) {
       const data = await response.json();
       const {tracks} = data;
-      setSongs(tracks);
+      if (scrolling) {
+        setSongs((prevSongs: any[]) => {
+          return [...prevSongs, ...tracks];
+        });
+      } else {
+        setSongs([...tracks]);
+      }
     }
+
+    setIsReady(true);
   };
 
   useEffect(() => {
     checkMediaAudioPermission();
     setupPlayer();
-    searchTracks();
+    searchTracks('', 1, false);
   }, [isReady]);
 
   return (
@@ -373,7 +382,6 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
         addTrack,
         removeTrack,
         play,
-        playerState,
         songs,
         searchTracks,
       }}

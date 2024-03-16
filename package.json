@@ -9,6 +9,7 @@
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "android:beta": "npx jetify && yarn version --minor && bundle exec fastlane android beta",
+    "android:build": "npx jetify && cd android && ./gradlew clean && ./gradlew assembleRelease && ./gradlew bundleRelease && cd ..",
     "postinstall": "rn-nodeify --install buffer,stream,assert,events,crypto,vm,process,fs,asyncstorage-down --hack"
   },
   "husky": {

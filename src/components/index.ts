@@ -6,5 +6,19 @@ import Header from './header/header';
 import AlbumList from './albumList';
 import HomeCard from './homeCard';
 import AlbumCard from './albumCard';
-
-export {Logo, SongList, AlbumList, Error, Player, Header, HomeCard, AlbumCard};
+import DisclaimerCard from './disclaimerCard';
+import TrackCard from './trackCard';
+import EmptyCard from './emptyCard';
+export {
+  Logo,
+  SongList,
+  AlbumList,
+  Error,
+  Player,
+  Header,
+  HomeCard,
+  DisclaimerCard,
+  AlbumCard,
+  TrackCard,
+  EmptyCard,
+};

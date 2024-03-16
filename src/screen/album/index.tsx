@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './style';
 import {HomeCard} from '../../components';
-import TrackCard from '../../components/trackCard';
+import TrackCard from '../../components/_trackCard';
 import Animated from 'react-native-reanimated';
 
 const Album = (props: any) => {

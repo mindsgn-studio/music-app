@@ -3,6 +3,8 @@ import {StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   container: {
     bottom: 0,
+    position: 'absolute',
+    width: '100%',
   },
   playerContainer: {
     marginVertical: 10,

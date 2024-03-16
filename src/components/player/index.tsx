@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import styles from './style';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 
 import Animated, {
   useAnimatedStyle,
@@ -42,11 +43,12 @@ const Player = () => {
   return (
     <Animated.View style={[styles.container, reanimatedStyle]}>
       <View style={styles.playerContainer}>
-        {/*
-            <TouchableOpacity>
-              <Icon name={'step-backward'} size={25} color="#FF522D" />
-            </TouchableOpacity>
-        */}
+        <TouchableOpacity
+          onPress={() => {
+            TrackPlayer.skipToPrevious();
+          }}>
+          <Icon name={'step-backward'} size={25} color="#FF522D" />
+        </TouchableOpacity>
 
         {state === 'playing' ? (
           <TouchableOpacity
@@ -64,11 +66,12 @@ const Player = () => {
           </TouchableOpacity>
         )}
 
-        {/*
-            <TouchableOpacity>
-              <Icon name={'step-forward'} size={25} color="#FF522D" />
-            </TouchableOpacity>
-        */}
+        <TouchableOpacity
+          onPress={() => {
+            TrackPlayer.skipToNext();
+          }}>
+          <Icon name={'step-forward'} size={25} color="#FF522D" />
+        </TouchableOpacity>
       </View>
     </Animated.View>
   );
