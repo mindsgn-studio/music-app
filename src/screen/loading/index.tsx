@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, memo} from 'react';
 import {View} from 'react-native';
 import styles from './style';
 import {Logo} from '../../components';
@@ -10,7 +10,7 @@ const Loading: React.FC<any> = (props: any) => {
 
   useEffect(() => {
     if (isReady) {
-      navigation.replace('Search');
+      navigation.replace('Tabs');
     }
   }, [isReady, navigation]);
 
@@ -21,4 +21,4 @@ const Loading: React.FC<any> = (props: any) => {
   );
 };
 
-export default Loading;
+export default memo(Loading);

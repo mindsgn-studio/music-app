@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, {
   createContext,
-  ReactElement,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
 } from 'react';
-import {PlayerInterface, PlayerStateInterface} from '../@types/types';
 import {useRealm} from './realmContext';
+import mobileAds from 'react-native-google-mobile-ads';
 
 import {
   requestMultiple,
@@ -20,10 +23,20 @@ import TrackPlayer, {Capability} from 'react-native-track-player';
 
 const {Player} = NativeModules;
 
-const PlayerContext = createContext<any>({
+interface Player {
+  isReady: boolean;
+  songs: any[];
+  play: () => void;
+  addTrack: (tracks: any[], index: number) => void;
+  removeTrack: () => void;
+  searchTracks: (search: string, page: number, scrolling: boolean) => void;
+}
+
+const PlayerContext = createContext<Player>({
   isReady: false,
+  songs: [],
   play: () => {},
-  addTrack: () => {},
+  addTrack: (tracks: any[], index: number) => {},
   removeTrack: () => {},
   searchTracks: () => {},
 });
@@ -48,8 +61,6 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
 
         realm.delete(tracksToDelete);
       });
-
-      console.log(`${collection} deleted successfully.`);
     } catch (error: any) {
       console.error('Error deleting Tracks:', error);
     }
@@ -114,38 +125,35 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
 
   const AddToDatabase = async (metadata: any) => {
     try {
-      console.log(metadata);
+      const {artist, title, album, url, trackNumber, discNumber, duration} =
+        metadata;
 
       const path = await saveBase64AsImage(
         metadata.cover,
-        `${metadata.artist}-${metadata.album}`,
+        `${artist}-${album}`,
       );
 
       const tracks = realm
         .objects('Tracks')
-        .filtered(
-          'artist = $0 AND title = $1',
-          metadata.artist,
-          metadata.title,
-        );
+        .filtered('artist = $0 AND title = $1', artist, title);
 
       if (tracks.length === 0) {
         realm.write(() => {
           realm.create('Tracks', {
             _id: new Realm.BSON.ObjectId(),
-            artist: metadata.artist,
-            title: metadata.title,
-            album: metadata.album,
-            url: metadata.url,
-            trackNumber: split(metadata.trackNumber)[0],
-            discNumber: split(metadata.discNumber)[0],
+            artist,
+            title,
+            album,
+            url,
+            trackNumber: trackNumber ? split(trackNumber)[0] : 1,
+            discNumber: discNumber ? split(discNumber)[0] : 1,
             cover: path,
-            duration: metadata.duration ? parseInt(metadata.duration) : null,
+            duration: duration ? parseInt(duration) : null,
             createdAt: new Date(),
           });
         });
       }
-
+      /*
       const artist = realm
         .objects('Artists')
         .filtered('artist = $0', metadata.albumArtist);
@@ -176,56 +184,78 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
             createdAt: new Date(),
           });
         });
-      }
+      }*/
     } catch (error: any) {
       console.error('Error:', error);
     }
   };
 
   const getAllFiles = () => {
+    const folders = [
+      RNFS.CachesDirectoryPath,
+      RNFS.DocumentDirectoryPath,
+      RNFS.DownloadDirectoryPath,
+      RNFS.ExternalCachesDirectoryPath,
+      RNFS.ExternalDirectoryPath,
+      RNFS.ExternalStorageDirectoryPath,
+      RNFS.FileProtectionKeys,
+      RNFS.LibraryDirectoryPath,
+      RNFS.MainBundlePath,
+      RNFS.PicturesDirectoryPath,
+      RNFS.TemporaryDirectoryPath,
+    ];
+
     try {
-      let startDirectory = RNFS.DownloadDirectoryPath;
-      crawlDirectories(startDirectory)
-        .then((mp3Files: any) => {
-          console.log('files', mp3Files);
-          if (mp3Files.length !== 0) {
-            getMetadata(mp3Files);
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      folders.map(directory => {
+        crawlDirectories(directory)
+          .then((mp3Files: any) => {
+            if (mp3Files.length !== 0) {
+              getMetadata(mp3Files);
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      });
     } catch (error) {
       console.log(error);
+    } finally {
+      return;
     }
   };
 
   const checkMediaAudioPermission = async () => {
-    //await deleteTracks('Tracks');
-    //await deleteTracks('Albums');
-    //await deleteTracks('Artists');
+    await deleteTracks('Tracks');
+    await deleteTracks('Albums');
+    await deleteTracks('Artists');
 
     checkMultiple([
       PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION,
       PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
       PERMISSIONS.ANDROID.READ_MEDIA_AUDIO,
-    ]).then(statuses => {
-      if (statuses[PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION] === 'denied') {
-        requestMediaAudioPermission();
-        return;
-      } else if (
-        statuses[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] === 'denied'
-      ) {
-        requestMediaAudioPermission();
-        return;
-      } else if (statuses[PERMISSIONS.ANDROID.READ_MEDIA_AUDIO] === 'denied') {
-        requestMediaAudioPermission();
-        return;
-      }
-    });
+    ])
+      .then(statuses => {
+        if (statuses[PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION] === 'denied') {
+          console.log('ACCESS_MEDIA_LOCATION');
+          requestMediaAudioPermission();
+          return;
+        }
+
+        if (statuses[PERMISSIONS.ANDROID.READ_MEDIA_AUDIO] === 'denied') {
+          console.log('READ_MEDIA_AUDIO');
+          requestMediaAudioPermission();
+          return;
+        }
+      })
+      .catch((error: any) => {
+        return error;
+      })
+      .finally(() => {
+        getAllFiles();
+      });
   };
 
-  const requestMediaAudioPermission = () => {
+  const requestMediaAudioPermission = async () => {
     requestMultiple([
       PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION,
       PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
@@ -235,20 +265,18 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
         if (statuses[PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION] === 'denied') {
           requestMediaAudioPermission();
           return;
-        } else if (
-          statuses[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] === 'denied'
-        ) {
-          requestMediaAudioPermission();
-          return;
-        } else if (
-          statuses[PERMISSIONS.ANDROID.READ_MEDIA_AUDIO] === 'denied'
-        ) {
+        }
+
+        if (statuses[PERMISSIONS.ANDROID.READ_MEDIA_AUDIO] === 'denied') {
           requestMediaAudioPermission();
           return;
         }
       })
       .catch((error: any) => {
         console.log(error);
+      })
+      .finally(() => {
+        checkMediaAudioPermission();
       });
   };
 
@@ -288,8 +316,16 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
     }
   };
 
-  const addTrack = async (tracks: any[], index: number) => {
+  const addTrack = async (tracks: any[], index: number, local: boolean) => {
     try {
+      let data: any = {
+        url: null,
+        title: null,
+        artist: null,
+        album: null,
+        artwork: null,
+      };
+
       await TrackPlayer.pause();
       await TrackPlayer.reset();
 
@@ -300,14 +336,26 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
       });
 
       tracks.map(async (track: any) => {
-        const {coverArt, artist, title, link, albumTitle} = track;
-        const data = {
-          url: link,
-          title,
-          artist,
-          album: albumTitle,
-          artwork: coverArt,
-        };
+        const {artist, title, albumTitle} = track;
+        if (local) {
+          data = {
+            ...data,
+            url: `file://${track.url}`,
+            title,
+            artist,
+            album: albumTitle,
+            artwork: `file://${track.cover}`,
+          };
+        } else {
+          data = {
+            ...data,
+            url: track.link,
+            title,
+            artist,
+            album: albumTitle,
+            artwork: track.coverArt,
+          };
+        }
 
         await TrackPlayer.add([data]);
       });
@@ -339,40 +387,49 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
     page: number,
     scrolling: boolean,
   ) => {
-    let link = 'http://mixo.mindsgn.studio/api';
+    try {
+      let link = 'https://dolphin-app-janfy.ondigitalocean.app/track';
 
-    if (search && search != '') {
-      link += `?search=${encodeURIComponent(search)}&page=${encodeURIComponent(
-        page,
-      )}&`;
-    }
-
-    if (!search) {
-      link += '/random';
-    }
-
-    const response = await fetch(link);
-
-    if (response.ok) {
-      const data = await response.json();
-      const {tracks} = data;
-      if (scrolling) {
-        setSongs((prevSongs: any[]) => {
-          return [...prevSongs, ...tracks];
-        });
-      } else {
-        setSongs([...tracks]);
+      if (search && search != '') {
+        link += `/search?search=${encodeURIComponent(
+          search,
+        )}&page=${encodeURIComponent(page)}&limit=20`;
       }
-    }
 
-    setIsReady(true);
+      if (!search) {
+        link += '/random';
+      }
+
+      const response = await fetch(link);
+
+      if (response.ok) {
+        const data = await response.json();
+        const {tracks} = data;
+        if (scrolling) {
+          setSongs((prevSongs: any[]) => {
+            return [...prevSongs, ...tracks];
+          });
+        } else {
+          setSongs([...tracks]);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsReady(true);
+    }
   };
 
   useEffect(() => {
     checkMediaAudioPermission();
     setupPlayer();
     searchTracks('', 1, false);
-  }, [isReady]);
+    mobileAds()
+      .initialize()
+      .then((adapterStatuses: any) => {
+        console.log(adapterStatuses);
+      });
+  }, []);
 
   return (
     <PlayerContext.Provider

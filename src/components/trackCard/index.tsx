@@ -13,6 +13,7 @@ const TrackCard = ({
   title,
   artist,
   link,
+  local = false,
 }: {
   songs: any;
   index: number;
@@ -21,20 +22,26 @@ const TrackCard = ({
   title: string;
   artist: string;
   link: string;
+  local: boolean;
 }) => {
   const {addTrack} = usePlayer();
+
   return (
     <TouchableOpacity
       key={`${_id}-${index}`}
       style={styles.trackCard}
       onPress={() => {
-        addTrack(songs, index);
+        addTrack(songs, index, local);
       }}>
       <ImageBackground
         style={styles.trackImage}
-        source={{
-          uri: coverArt,
-        }}
+        source={
+          local
+            ? `file://${coverArt}`
+            : {
+                uri: coverArt,
+              }
+        }
       />
       <View>
         <Text numberOfLines={1} style={styles.trackTitle}>
@@ -45,13 +52,15 @@ const TrackCard = ({
         </Text>
       </View>
 
-      <TouchableOpacity
-        onPress={() => Linking.openURL(link)}
-        style={{
-          marginLeft: 20,
-        }}>
-        <Icon name={'download'} size={20} color="#FF522D" />
-      </TouchableOpacity>
+      {local ? null : (
+        <TouchableOpacity
+          onPress={() => Linking.openURL(link)}
+          style={{
+            marginLeft: 20,
+          }}>
+          <Icon name={'download'} size={20} color="#FF522D" />
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
   );
 };

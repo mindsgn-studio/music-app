@@ -9,6 +9,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     height: 60,
   },
+  tabItem: {
+    padding: 10,
+    borderRadius: 50,
+  },
 });
 
 export default styles;

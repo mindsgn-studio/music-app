@@ -1,6 +1,6 @@
 import React from 'react';
-import {Search, Loading} from './src/screen';
-import {SafeAreaView, StatusBar} from 'react-native';
+import {Loading, Tabs, Album} from './src/screen';
+import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -14,22 +14,15 @@ const App = () => {
     <RealmProvider>
       <PlayerProvider>
         <SafeAreaProvider>
-          <SafeAreaView
-            style={{
-              flex: 1,
-              display: 'flex',
-              justifyContent: 'center',
-              alignContent: 'center',
-              width: '100%',
-              backgroundColor: 'black',
-            }}>
+          <SafeAreaView style={style.container}>
             <NavigationContainer>
               <Stack.Navigator
                 screenOptions={{
                   headerShown: false,
                 }}>
                 <Stack.Screen name="Loading" component={Loading} />
-                <Stack.Screen name="Search" component={Search} />
+                <Stack.Screen name="Tabs" component={Tabs} />
+                <Stack.Screen name="Album" component={Album} />
               </Stack.Navigator>
             </NavigationContainer>
             <Player />
@@ -39,5 +32,16 @@ const App = () => {
     </RealmProvider>
   );
 };
+
+const style = StyleSheet.create({
+  container: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
+    width: '100%',
+    backgroundColor: 'black',
+  },
+});
 
 export default App;

@@ -1,7 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, ImageBackground} from 'react-native';
+import React, {useEffect, useState, memo} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ImageBackground,
+} from 'react-native';
 import styles from './style';
 import {useRealm} from '../../context';
+import TrackCard from '../trackCard';
 
 const AlbumCard = ({
   goToAlbum,
@@ -12,24 +19,55 @@ const AlbumCard = ({
   goToArtist: any;
   navigation: any;
 }) => {
-  console.log(navigation);
   const realm = useRealm();
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const albumResponse: any = realm.objects('Albums').sorted('album');
-    if (albumResponse.length === 0) {
-      navigation.navigate('Search');
-    } else {
-      setData(albumResponse);
-    }
-  }, [realm, navigation]);
+    const albumObject: any = realm.objects('Tracks').sorted('album');
+    setData(albumObject);
+    const albumListener = (event: any[]) => {
+      // setData((previousData: any[]) => [...previousData, ...event]);
+    };
+
+    albumObject?.addListener(albumListener);
+
+    return () => {
+      albumObject?.removeListener(albumListener);
+    };
+  }, [realm]);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{'Albums'}</Text>
+      <Text style={styles.text}>{'Tracks'}</Text>
       <View>
-        {data.map((track: any) => {
+        <FlatList
+          data={data}
+          keyExtractor={item => item._id}
+          ListFooterComponent={<View style={{height: 100}} />}
+          initialNumToRender={5}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {}}
+          ListHeaderComponent={<View />}
+          renderItem={track => {
+            const {index, item} = track;
+            const {_id, cover, artist, title, url} = item;
+
+            return (
+              <TrackCard
+                songs={data}
+                _id={_id}
+                artist={artist}
+                title={title}
+                coverArt={cover}
+                link={url}
+                index={index}
+                local={true}
+              />
+            );
+          }}
+          ListEmptyComponent={<View />}
+        />
+        {/*data.map((track: any) => {
           return (
             <View style={styles.card} key={track._id}>
               <TouchableOpacity
@@ -56,10 +94,10 @@ const AlbumCard = ({
               </View>
             </View>
           );
-        })}
+        })*/}
       </View>
     </View>
   );
 };
 
-export default AlbumCard;
+export default memo(AlbumCard);

@@ -1,4 +1,7 @@
 {
   "name": "MIXØ",
-  "displayName": "MIXØ"
+  "displayName": "MIXØ",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-2774310050404645~2252427462"
+  }
 }

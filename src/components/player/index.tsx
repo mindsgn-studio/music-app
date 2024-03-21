@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useEffect, useState, memo} from 'react';
+import {View, TouchableOpacity} from 'react-native';
 import styles from './style';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import ReactNativeBlobUtil from 'react-native-blob-util';
 
 import Animated, {
   useAnimatedStyle,
@@ -19,6 +19,7 @@ const events = [Event.PlaybackState, Event.PlaybackError];
 const Player = () => {
   const [state, setState] = useState<string>('idle');
   const progress = useSharedValue(0);
+  const bottomSheetY = useSharedValue(-200);
 
   useTrackPlayerEvents(events, event => {
     if (event.type === Event.PlaybackError) {
@@ -31,12 +32,14 @@ const Player = () => {
   const reanimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: progress.value,
+      bottom: bottomSheetY.value,
     };
   }, []);
 
   useEffect(() => {
     if (state === 'playing') {
       progress.value = withTiming(1, {duration: 500});
+      bottomSheetY.value = withTiming(60, {duration: 500});
     }
   }, [state]);
 
@@ -77,4 +80,4 @@ const Player = () => {
   );
 };
 
-export default Player;
+export default memo(Player);

@@ -4,6 +4,7 @@ import styles from './style';
 import {usePlayer} from '../../context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {DisclaimerCard, TrackCard, EmptyCard} from '../../components';
+import {BannerAd, TestIds, BannerAdSize} from 'react-native-google-mobile-ads';
 
 const Search = () => {
   const [search, setSearch] = useState<string>('');
@@ -36,7 +37,14 @@ const Search = () => {
       <FlatList
         data={songs}
         keyExtractor={item => item._id}
-        ListFooterComponent={<View style={{height: 100}} />}
+        ListFooterComponent={
+          <View style={{height: 100}}>
+            <BannerAd
+              unitId={TestIds.BANNER}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+            />
+          </View>
+        }
         initialNumToRender={5}
         onEndReachedThreshold={0.5}
         onEndReached={() => {
@@ -58,6 +66,7 @@ const Search = () => {
               coverArt={coverArt}
               link={link}
               index={index}
+              local={false}
             />
           );
         }}
