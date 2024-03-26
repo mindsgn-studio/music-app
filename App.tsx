@@ -1,5 +1,5 @@
 import React from 'react';
-import {Loading, Tabs, Album} from './src/screen';
+import {Loading, Home, Search} from './src/screen';
 import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -21,8 +21,7 @@ const App = () => {
                   headerShown: false,
                 }}>
                 <Stack.Screen name="Loading" component={Loading} />
-                <Stack.Screen name="Tabs" component={Tabs} />
-                <Stack.Screen name="Album" component={Album} />
+                <Stack.Screen name="Home" component={Search} />
               </Stack.Navigator>
             </NavigationContainer>
             <Player />

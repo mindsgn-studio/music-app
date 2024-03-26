@@ -5,11 +5,11 @@ import {usePlayer} from '../../context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {DisclaimerCard, TrackCard, EmptyCard} from '../../components';
 import {BannerAd, TestIds, BannerAdSize} from 'react-native-google-mobile-ads';
-
+import {FlashList} from '@shopify/flash-list';
 const Search = () => {
   const [search, setSearch] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const {songs, searchTracks, extraData} = usePlayer();
+  const {songs, searchTracks} = usePlayer();
 
   return (
     <View style={styles.container}>
@@ -34,7 +34,7 @@ const Search = () => {
         </View>
       </View>
 
-      <FlatList
+      <FlashList
         data={songs}
         keyExtractor={item => item._id}
         ListFooterComponent={
@@ -45,13 +45,12 @@ const Search = () => {
             />
           </View>
         }
-        initialNumToRender={5}
+        estimatedItemSize={20}
         onEndReachedThreshold={0.5}
         onEndReached={() => {
           searchTracks(search, page + 1, true);
           setPage(page + 1);
         }}
-        extraData={extraData}
         ListHeaderComponent={<DisclaimerCard />}
         renderItem={track => {
           const {index, item} = track;

@@ -19,7 +19,7 @@ const events = [Event.PlaybackState, Event.PlaybackError];
 const Player = () => {
   const [state, setState] = useState<string>('idle');
   const progress = useSharedValue(0);
-  const bottomSheetY = useSharedValue(-200);
+  const bottomSheetY = useSharedValue(-100);
 
   useTrackPlayerEvents(events, event => {
     if (event.type === Event.PlaybackError) {
@@ -39,7 +39,7 @@ const Player = () => {
   useEffect(() => {
     if (state === 'playing') {
       progress.value = withTiming(1, {duration: 500});
-      bottomSheetY.value = withTiming(60, {duration: 500});
+      bottomSheetY.value = withTiming(5, {duration: 500});
     }
   }, [state]);
 

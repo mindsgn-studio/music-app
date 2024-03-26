@@ -9,6 +9,7 @@ import {
 import styles from './style';
 import {useRealm} from '../../context';
 import TrackCard from '../trackCard';
+import {FlashList} from '@shopify/flash-list';
 
 const AlbumCard = ({
   goToAlbum,
@@ -38,13 +39,12 @@ const AlbumCard = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{'Tracks'}</Text>
       <View>
-        <FlatList
+        <FlashList
           data={data}
           keyExtractor={item => item._id}
           ListFooterComponent={<View style={{height: 100}} />}
-          initialNumToRender={5}
+          estimatedItemSize={200}
           onEndReachedThreshold={0.5}
           onEndReached={() => {}}
           ListHeaderComponent={<View />}
@@ -67,34 +67,6 @@ const AlbumCard = ({
           }}
           ListEmptyComponent={<View />}
         />
-        {/*data.map((track: any) => {
-          return (
-            <View style={styles.card} key={track._id}>
-              <TouchableOpacity
-                onPress={() => {
-                  goToAlbum(track.album);
-                }}>
-                <ImageBackground
-                  style={styles.image}
-                  source={{uri: `file://${track.cover}`}}
-                  resizeMode="cover"
-                />
-              </TouchableOpacity>
-
-              <View style={styles.detailsContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    goToAlbum(track.album);
-                  }}>
-                  <Text style={styles.albumText}>{track.album}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={goToArtist}>
-                  <Text style={styles.artistText}>{track.artist}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        })*/}
       </View>
     </View>
   );
