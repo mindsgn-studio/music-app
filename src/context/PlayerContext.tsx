@@ -398,11 +398,11 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
       if (search && search != '') {
         link += `/search?search=${encodeURIComponent(
           search,
-        )}&page=${encodeURIComponent(page)}&limit=2`;
+        )}&page=${encodeURIComponent(page)}&limit=20`;
       }
 
       if (!search) {
-        link += '/random';
+        link += '/random?limit=50';
       }
 
       const response = await fetch(link);

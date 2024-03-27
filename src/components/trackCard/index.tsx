@@ -38,11 +38,7 @@ const TrackCard = ({
   };
 
   useTrackPlayerEvents(events, event => {
-    if (event.type === Event.PlaybackError) {
-    }
-    if (event.type === Event.PlaybackState) {
-      updateCurrentTrack();
-    }
+    updateCurrentTrack();
   });
 
   return (

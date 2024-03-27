@@ -5,6 +5,9 @@ const styles = StyleSheet.create({
     margin: 10,
     display: 'flex',
     flexDirection: 'row',
+    backgroundColor: "color: 'rgba(255, 255, 255, 0.1),",
+    paddingVertical: 10,
+    paddingHorizontal: 10,
   },
   trackImage: {
     width: 60,
