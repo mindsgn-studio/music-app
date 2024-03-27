@@ -9,6 +9,7 @@ import AlbumCard from './albumCard';
 import DisclaimerCard from './disclaimerCard';
 import TrackCard from './trackCard';
 import EmptyCard from './emptyCard';
+import SearchInput from './searchInput';
 export {
   Logo,
   SongList,
@@ -21,4 +22,5 @@ export {
   AlbumCard,
   TrackCard,
   EmptyCard,
+  SearchInput,
 };

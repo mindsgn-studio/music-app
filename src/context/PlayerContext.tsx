@@ -4,7 +4,6 @@
 import React, {
   createContext,
   ReactNode,
-  useCallback,
   useContext,
   useEffect,
   useState,
@@ -26,17 +25,25 @@ const {Player} = NativeModules;
 interface Player {
   isReady: boolean;
   songs: any[];
+  search: string;
+  page: number;
+  setPage: (page: number) => void;
+  setSearch: (search: string) => void;
   play: () => void;
-  addTrack: (tracks: any[], index: number) => void;
+  addTrack: (tracks: any[], index: number, local: boolean) => void;
   removeTrack: () => void;
-  searchTracks: (search: string, page: number, scrolling: boolean) => void;
+  searchTracks: (scrolling: boolean) => void;
 }
 
 const PlayerContext = createContext<Player>({
   isReady: false,
   songs: [],
+  search: '',
+  page: 1,
+  setPage: (page: number) => {},
+  setSearch: () => {},
   play: () => {},
-  addTrack: (tracks: any[], index: number) => {},
+  addTrack: (tracks: any[], index: number, local: boolean) => {},
   removeTrack: () => {},
   searchTracks: () => {},
 });
@@ -51,6 +58,8 @@ function usePlayer(): any {
 
 const PlayerProvider = (props: {children: ReactNode}): any => {
   const realm = useRealm();
+  const [page, setPage] = useState<number>(1);
+  const [search, setSearch] = useState<string>('');
   const [isReady, setIsReady] = useState<boolean>(false);
   const [songs, setSongs] = useState<any[]>([]);
 
@@ -251,7 +260,7 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
         return error;
       })
       .finally(() => {
-        getAllFiles();
+        // getAllFiles();
       });
   };
 
@@ -382,18 +391,14 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
 
   const removeTrack = async () => {};
 
-  const searchTracks = async (
-    search: string,
-    page: number,
-    scrolling: boolean,
-  ) => {
+  const searchTracks = async (scrolling: boolean) => {
     try {
       let link = 'https://dolphin-app-janfy.ondigitalocean.app/track';
 
       if (search && search != '') {
         link += `/search?search=${encodeURIComponent(
           search,
-        )}&page=${encodeURIComponent(page)}&limit=20`;
+        )}&page=${encodeURIComponent(page)}&limit=2`;
       }
 
       if (!search) {
@@ -423,7 +428,7 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
   useEffect(() => {
     checkMediaAudioPermission();
     setupPlayer();
-    searchTracks('', 1, false);
+    searchTracks(false);
     mobileAds()
       .initialize()
       .then((adapterStatuses: any) => {
@@ -436,10 +441,14 @@ const PlayerProvider = (props: {children: ReactNode}): any => {
       {...props}
       value={{
         isReady,
+        search,
+        page,
+        songs,
+        setSearch,
+        setPage,
         addTrack,
         removeTrack,
         play,
-        songs,
         searchTracks,
       }}
     />

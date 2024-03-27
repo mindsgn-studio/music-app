@@ -10,4 +10,3 @@ import {PlaybackService} from './src/services';
 
 TrackPlayer.registerPlaybackService(() => PlaybackService);
 AppRegistry.registerComponent(appName, () => App);
-

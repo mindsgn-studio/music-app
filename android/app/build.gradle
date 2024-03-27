@@ -139,8 +139,8 @@ android {
         applicationId "mindsgn.studio.music"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 37  
-        versionName "2.37.0"
+        versionCode 38  
+        versionName "2.59.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {

@@ -1,69 +1,26 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
-  container: {
-    bottom: 100,
+  inputContainer: {
     position: 'absolute',
     width: '100%',
+    zIndex: 10,
   },
-  playerContainer: {
-    marginVertical: 10,
-    marginHorizontal: 10,
+  input: {
+    margin: 10,
     borderRadius: 10,
-    height: 60,
-    zIndex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    padding: 5,
+    backgroundColor: 'rgba(255 , 255, 255, 0.3)',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-start',
+    paddingHorizontal: 10,
   },
-  slider: {
-    height: 5,
-    backgroundColor: 'white',
-    marginBottom: 10,
-  },
-  blurContainer: {
-    position: 'relative',
+  textInput: {
     flex: 1,
-    padding: 0,
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  detailsContainer: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  imageContainer: {
-    width: 50,
-    height: 50,
-    backgroundColor: 'black',
-  },
-  textContainer: {
-    paddingLeft: 10,
-  },
-  artistText: {
-    fontFamily: 'SF-Pro-Rounded-Bold',
-    color: 'gray',
-    fontSize: 10,
-  },
-  titleText: {
-    fontSize: 21,
-    color: '#E0E0E0',
-    fontWeight: 'bold',
+    color: 'white',
     fontFamily: 'SF-Pro-Rounded-Heavy',
-  },
-  button: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-    width: 50,
-    height: 50,
-    backgroundColor: 'white',
-    borderRadius: 10,
+    fontSize: 18,
   },
 });
 

@@ -15,3 +15,9 @@ export const ERROR = 'GET_RANDOM';
 
 export const HEIGHT = Dimensions.get('window').height;
 export const WIDTH = Dimensions.get('window').width;
+
+export const COLORS = {
+  black: '',
+  orange: '',
+  white: '',
+};
